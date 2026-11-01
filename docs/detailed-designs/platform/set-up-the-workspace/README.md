@@ -11,8 +11,8 @@ journey in `docs/journeys.md`.
 
 Terms used below:
 
-- **workspace** — the Angular monorepo under `src/frontend` with one application project and one library per area, as `AGENTS.md` mandates
-- **solution** — the .NET solution under `src/backend` with the six `Buttonry.*` projects
+- **workspace** — the Angular monorepo under `frontend` with one application project and one library per area, as `AGENTS.md` mandates
+- **solution** — the .NET solution `backend/Buttonry.sln`, projects under `backend/src` and tests under `backend/tests`, with the six `Buttonry.*` projects
 - **verify command** — the single command that restores, builds, lints and tests both stacks and exits non-zero on any failure (`L2-071`)
 - **empty shell** — the application frame of [responsive-accessible-shell](../responsive-accessible-shell/README.md) in its guest state, with a placeholder home page and no feature screens
 - **architecture test** — a unit test that inspects the compiled assemblies for forbidden registrations (`L2-060`)
@@ -28,7 +28,7 @@ snapshots and axe runs over every route are deferred to their own features.
 
 This design targets the founder-only shop under [ADR general/0010](../../../adr/general/0010-founder-only-shop.md). Existing descriptions identify reusable parts, not evidence that revised acceptance criteria pass. The configured founder alone manages inventory, fulfilment and support; customers have private buying accounts.
 
-### Backend solution (`src/backend/Buttonry.sln`)
+### Backend solution (`backend/Buttonry.sln`)
 
 Target framework `net10.0` (.NET 10 LTS SDK, pinned in `global.json`), nullable and
 implicit usings on, warnings as errors.
@@ -52,12 +52,12 @@ implicit usings on, warnings as errors.
   migrations exist yet and exits 0.
 - **`Directory.Build.props`** — shared `TargetFramework`, `Nullable`, `ImplicitUsings`,
   `TreatWarningsAsErrors` and the `Buttonry` root namespace.
-- **`.editorconfig`** at `src/backend` — the `dotnet format` rules the verify command
+- **`.editorconfig`** at `backend` — the `dotnet format` rules the verify command
   checks with `--verify-no-changes`.
 
-### Backend tests (`tests/`)
+### Backend tests (`backend/tests/`)
 
-One xUnit project per backend project, named `tests/Buttonry.<Project>.Tests`, each
+One xUnit project per backend project, named `backend/tests/Buttonry.<Project>.Tests`, each
 referencing its project:
 
 - **`Buttonry.Api.Tests`** — `HealthEndpointTests` uses `WebApplicationFactory<Program>`
@@ -72,7 +72,7 @@ referencing its project:
   **`Buttonry.Migrator.Tests`** — each holds one smoke test that the project's marker
   type loads, so every test project runs in CI from day one.
 
-### Frontend workspace (`src/frontend`)
+### Frontend workspace (`frontend`)
 
 Angular 22 workspace (Angular CLI 22) on Node 22 LTS, standalone components, signals,
 `npm ci`. `angular.json` registers the application and eight libraries; `tsconfig.json`
@@ -108,7 +108,7 @@ maps `@buttonry/<library>` to each `projects/<library>/src/public-api.ts`.
 - **Lint and format** — `eslint.config.js` with `angular-eslint` (TypeScript and
   template rules, including the accessibility rules); `.prettierrc` with
   `prettier --check` in the lint script.
-- **Scripts** in `src/frontend/package.json`: `build:all` builds every library then the
+- **Scripts** in `frontend/package.json`: `build:all` builds every library then the
   application; `lint` runs Prettier and ESLint; `test:e2e` runs Playwright; **`verify`**
   is the verify command and runs, in order, `dotnet restore`, `dotnet format
   --verify-no-changes`, `dotnet build --no-restore -warnaserror`, `dotnet test
@@ -116,7 +116,7 @@ maps `@buttonry/<library>` to each `projects/<library>/src/public-api.ts`.
   assumes `npm ci` has run once. Any non-zero exit stops the chain. Each step is also a
   script of its own (`backend:verify`, `lint`, `build:all`, `test:e2e`).
 
-### End-to-end tests (`src/frontend/e2e`)
+### End-to-end tests (`frontend/e2e`)
 
 Playwright, Chromium only. Per the `AGENTS.md` testing rules the backend never runs: `webServer` serves the production build of `projects/buttonry` (`dist/buttonry/browser`) as static files on port 4200 with SPA fallback, and every test installs a catch-all `page.route('**/api/**')` fixture so no request can reach `Buttonry API`.
 
@@ -132,7 +132,7 @@ Playwright, Chromium only. Per the `AGENTS.md` testing rules the backend never r
 
 Runs on every pull request and push to `main` on `ubuntu-latest`: checks out, installs
 Node 22 and the .NET 10 SDK, runs `npm ci` and `npx playwright install --with-deps
-chromium` in `src/frontend`, then `npm run verify`. A failing step fails the workflow
+chromium` in `frontend`, then `npm run verify`. A failing step fails the workflow
 (`L2-071` criteria 2 and 3).
 
 ### Configuration values
@@ -147,7 +147,7 @@ chromium` in `src/frontend`, then `npm run verify`. A failing step fails the wor
 
 ### Implementation evidence
 
-Completed behavior evidence: `sequence-verify` in `src/frontend/package.json` and `tests/Buttonry.Api.Tests/StatelessApiTests.cs`. 1 of 1 target behaviors are counted. Remaining target behavior and acceptance checks are not counted merely because older marketplace tests pass.
+Completed behavior evidence: `sequence-verify` in `frontend/package.json` and `backend/tests/Buttonry.Api.Tests/StatelessApiTests.cs`. 1 of 1 target behaviors are counted. Remaining target behavior and acceptance checks are not counted merely because older marketplace tests pass.
 
 Effort in the matching estimate is the full target feature effort in developer-days, not remaining work. Completion counts whole verified behaviors and rounds to the nearest ten percent. Source and existing acceptance tests supply the evidence; this documentation refresh does not execute new target tests.
 
@@ -164,7 +164,7 @@ The current workspace already contains application shells and shared overlay ser
 | `L2-061` | `L1-016` | Every page and dialog shall render without horizontal scrolling from 320px wide upwards. The layout shall adapt at these breakpoints: extra small (<576px), small (>=576px), medium (>=768px), large (>=992px) and extra large (>=1200px). |
 | `L2-064` | `L1-017` | Every page and dialog shall conform to WCAG 2.2 level AA. Automated accessibility checks shall run in CI on every page and fail the build on any violation. |
 | `L2-065` | `L1-017` | Every function shall be usable with a keyboard alone, with a visible focus indicator and a logical focus order. Dialogs shall trap focus and return it on close. Every photo shall have alt text, every form field a visible label, and errors shall be announced to screen readers. |
-| `L2-071` | `L1-019` | One command, run from a fresh clone, shall restore, build, lint and test the backend solution (`src/backend`) and the frontend workspace (`src/frontend`), and shall fail when any step fails. The API shall answer `GET /api/health` with HTTP 200 without a database or any other external dependency. The frontend command shall build every library and the application. The same command shall pass on Windows and on Linux CI. Statelessness is checked by the architecture test of L2-060; breakpoints follow L2-061; the shell's accessibility follows L2-064 and L2-065; dependency scanning (L2-053) is not part of this command. |
+| `L2-071` | `L1-019` | One command, run from a fresh clone, shall restore, build, lint and test the backend solution (`backend`) and the frontend workspace (`frontend`), and shall fail when any step fails. The API shall answer `GET /api/health` with HTTP 200 without a database or any other external dependency. The frontend command shall build every library and the application. The same command shall pass on Windows and on Linux CI. Statelessness is checked by the architecture test of L2-060; breakpoints follow L2-061; the shell's accessibility follows L2-064 and L2-065; dependency scanning (L2-053) is not part of this command. |
 
 ## Diagrams
 

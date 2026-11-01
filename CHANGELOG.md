@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- The repository layout follows Saturdaze: the .NET solution is in `backend/` with projects in `backend/src/` and tests in `backend/tests/`, and the Angular workspace is in `frontend/`; `src/` and `tests/` are gone ([ADR platform/0019](docs/adr/platform/0019-backend-and-frontend-root-folders.md)).
+
 ### Added
 
 - Founder guide video 01, *Next steps to selling on Buttonry* (`docs/videos/01-next-steps-to-selling/`): an 8.5-minute, picture-first narrated walkthrough of photographing treasures, opening Stripe, the technical partner's remaining jobs, publishing, shipping and getting paid, with its builder in `docs/videos/_build/` ([ADR general/0011](docs/adr/general/0011-founder-guide-videos.md)).

@@ -4,11 +4,11 @@ Inputs  LINES below                          one narrated line per slide (captio
         music/warm-nostalgic-sentimental-excerpt.mp3  "Warm Nostalgic Sentimental Music" (andriig, Pixabay), ducked under the voice
         kokoro/                              Kokoro-82M ONNX + af_heart voice from Hugging Face (auto-downloaded)
         docs/design-system/assets/logo.svg   the Heirloom logo
-        src/frontend/projects/buttonry/public/media/*.jpg and public/fonts/*.woff2  the photos and typefaces
-        src/backend/Buttonry.Cli/SeedPhotos/**/*.jpg  the category photos
+        frontend/projects/buttonry/public/media/*.jpg and public/fonts/*.woff2  the photos and typefaces
+        backend/src/Buttonry.Cli/SeedPhotos/**/*.jpg  the category photos
 Outputs buttonry-pitch.mp4 (H.264/AAC), buttonry-pitch.webm (VP9/Opus), buttonry-pitch.vtt (captions),
         buttonry-pitch.txt (transcript), written to the app's public media folder
-        (src/frontend/projects/buttonry/public/media/) and copied to docs/mocks/assets/media/.
+        (frontend/projects/buttonry/public/media/) and copied to docs/mocks/assets/media/.
         The poster is the hero photo (buttonry-hero.jpg), so the page looks the same with or without the video.
 
 Needs: ffmpeg/ffprobe, python playwright (chromium); for narration also kokoro-onnx, onnxruntime,
@@ -22,8 +22,8 @@ from playwright.sync_api import sync_playwright
 
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parents[3]
-APP = REPO / "src/frontend/projects/buttonry/public"
-SEED = REPO / "src/backend/Buttonry.Cli/SeedPhotos"
+APP = REPO / "frontend/projects/buttonry/public"
+SEED = REPO / "backend/src/Buttonry.Cli/SeedPhotos"
 OUT_DIRS = [APP / "media", REPO / "docs/mocks/assets/media"]
 NAME = "buttonry-pitch"
 HF_REPO, VOICE, SPEED, LANG = "onnx-community/Kokoro-82M-v1.0-ONNX", "af_heart", 1.05, "en-us"

@@ -62,11 +62,11 @@ marketplace administrator or independent arbitration role for order problems.
 ## Testing rules (CRITICAL)
 
 - **Backend tests never touch a real database.** Unit, integration and architecture tests
-  under `tests/Buttonry.*.Tests/` use mocks, fakes or an in-memory substitute (the EF Core
+  under `backend/tests/Buttonry.*.Tests/` use mocks, fakes or an in-memory substitute (the EF Core
   in-memory or SQLite in-memory provider). No SQL Server, LocalDB, Testcontainers, Docker or
   connection string to a live database in any test, fixture or CI job. The same applies to
   Redis and every other external system: fake the port.
-- **Playwright tests never run the backend.** Every e2e test in `src/frontend/e2e/` serves
+- **Playwright tests never run the backend.** Every e2e test in `frontend/e2e/` serves
   the `Buttonry API` through `page.route` fixtures or an equivalent fake. No test starts, waits
   for, or calls `Buttonry.Api`, `Buttonry.Worker` or a database. The frontend under test is
   the built Angular application only.
@@ -76,9 +76,10 @@ marketplace administrator or independent arbitration role for order problems.
 ## Folder structure (MANDATORY)
 
 This layout is required. Every file you create must land in one of the folders below;
-never invent a parallel folder, rename one of these, or put code outside `src/` and
-`tests/`. If a design seems to need a folder that is not listed, add it to this section
-first and record the change as an ADR.
+never invent a parallel folder, rename one of these, or put code outside `backend/` and
+`frontend/` ([ADR platform/0019](docs/adr/platform/0019-backend-and-frontend-root-folders.md)).
+If a design seems to need a folder that is not listed, add it to this section first and
+record the change as an ADR.
 
 ```
 buttonry/
@@ -103,8 +104,8 @@ buttonry/
 │   ├── prompts/                 ready-to-run implementation prompts, NN-journey.md in build order
 │   ├── videos/                  founder guide videos: NN-topic/ (script.md, slides.html, README.md, pictures/, mp4, vtt), assets/ slide styles and music, _build/ builder (ADR general/0011)
 │   └── adr/                     {category}/NNNN-title.md
-├── src/
-│   ├── backend/                 .NET solution, namespace prefix Buttonry
+├── backend/                     .NET solution (Buttonry.sln, Directory.Build.props, global.json), namespace prefix Buttonry
+│   ├── src/
 │   │   ├── Buttonry.Api/         ASP.NET Core Web API: controllers, policies, middleware
 │   │   ├── Buttonry.Application/ MediatR commands, queries, validators, DTOs, ports
 │   │   ├── Buttonry.Domain/      entities, value objects, state machines, domain events
@@ -113,30 +114,30 @@ buttonry/
 │   │   ├── Buttonry.Migrator/    applies EF Core migrations
 │   │   └── Buttonry.Cli/         developer tool: `reset` and `seed` a local demo install
 │   │       └── SeedPhotos/      {category}/ demo product photos + ATTRIBUTION.md
-│   └── frontend/                Angular workspace (see below)
-│       ├── angular.json
-│       ├── package.json
-│       ├── tsconfig.json        path alias @buttonry/<library> per library
-│       ├── eslint.config.js
-│       ├── e2e/                 Playwright: pages/, tests/, fixtures.ts, serve.mjs (static build server)
-│       └── projects/
-│           ├── buttonry/         the application (projectType "application")
-│           │   ├── src/app/     app.config.ts, app.routes.ts, shells only
-│           │   └── public/
-│           │       ├── media/   hero, founder and share images, the pitch video (mp4, webm) and its captions (vtt) + ATTRIBUTION.md (ADR platform/0011, 0014)
-│           │       └── fonts/   Fraunces and Source Sans 3 (woff2) + their SIL OFL licences
-│           ├── api/             library: typed HTTP services, DTOs, auth state, interceptors
-│           ├── components/      library: Heirloom design-system components and styles (tokens.css)
-│           ├── accounts/        library: feature area
-│           ├── catalog/         library: feature area
-│           ├── listings/        library: feature area
-│           ├── orders/          library: feature area (checkout, founder fulfilment and customer support)
-│           ├── reviews/         library: feature area (founder public story and collection only)
-│           ├── marketing/       library: feature area (the /welcome page)
-│           └── privacy/         library: feature area
-└── tests/
-    └── Buttonry.*.Tests/         unit, integration and architecture tests per backend project
-                                 (including Buttonry.Cli.Tests)
+│   └── tests/
+│       └── Buttonry.*.Tests/     unit, integration and architecture tests per backend project
+│                                (including Buttonry.Cli.Tests)
+└── frontend/                    Angular workspace (see below)
+    ├── angular.json
+    ├── package.json
+    ├── tsconfig.json        path alias @buttonry/<library> per library
+    ├── eslint.config.js
+    ├── e2e/                 Playwright: pages/, tests/, fixtures.ts, serve.mjs (static build server)
+    └── projects/
+        ├── buttonry/         the application (projectType "application")
+        │   ├── src/app/     app.config.ts, app.routes.ts, shells only
+        │   └── public/
+        │       ├── media/   hero, founder and share images, the pitch video (mp4, webm) and its captions (vtt) + ATTRIBUTION.md (ADR platform/0011, 0014)
+        │       └── fonts/   Fraunces and Source Sans 3 (woff2) + their SIL OFL licences
+        ├── api/             library: typed HTTP services, DTOs, auth state, interceptors
+        ├── components/      library: Heirloom design-system components and styles (tokens.css)
+        ├── accounts/        library: feature area
+        ├── catalog/         library: feature area
+        ├── listings/        library: feature area
+        ├── orders/          library: feature area (checkout, founder fulfilment and customer support)
+        ├── reviews/         library: feature area (founder public story and collection only)
+        ├── marketing/       library: feature area (the /welcome page)
+        └── privacy/         library: feature area
 ```
 
 `Buttonry.Cli` is a developer tool only: deployments and CI never run it against a database
@@ -181,7 +182,7 @@ library per area, all registered in `angular.json`. Follow these rules:
 ## Components library is mandatory (CRITICAL)
 
 - The `buttonry` application and every feature library MUST be built from
-  `@buttonry/components` (`src/frontend/projects/components/`). Never hand-write markup, CSS,
+  `@buttonry/components` (`frontend/projects/components/`). Never hand-write markup, CSS,
   icons, overlays or toasts the library already provides. Use the `sy-*` component,
   `DialogService`, `SheetService` and `ToastService`.
 - `docs/screen-composition.md` is binding. Before implementing any page, dialog,
@@ -197,7 +198,7 @@ library per area, all registered in `angular.json`. Follow these rules:
 
 ## Working in this repository
 
-- Run `npm run verify` in `src/frontend` before every commit; it is the same command CI runs
+- Run `npm run verify` in `frontend` before every commit; it is the same command CI runs
   (`L2-071`, [ADR-0002](docs/adr/platform/0002-single-verify-command.md)).
 - Change mocks in `docs/mocks/_build/screens_*.py`, then run
   `python docs/mocks/_build/build.py` (Python 3.12 or later) and

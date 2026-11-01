@@ -11,7 +11,7 @@ python -I docs/mocks/_build/video/build_video.py --silent   # no narration; musi
 
 It writes `buttonry-pitch.mp4`, `buttonry-pitch.webm`, `buttonry-pitch.vtt` (captions, off until
 the viewer turns them on) and `buttonry-pitch.txt` (transcript) to
-`src/frontend/projects/buttonry/public/media/` (served at `/media/`) and copies them to
+`frontend/projects/buttonry/public/media/` (served at `/media/`) and copies them to
 `docs/mocks/assets/media/` for the mocks. The poster is the hero photo (`buttonry-hero.jpg`), so the
 hero looks exactly as designed whether or not the visitor presses Play. When a `slides/` folder
 exists here (git-ignored) the six slide PNGs are kept in it for review.

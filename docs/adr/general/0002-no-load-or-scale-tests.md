@@ -31,7 +31,7 @@ tests are specified, designed, estimated or built.
   (the frontend budgets it also kept at the time were later removed by
   [ADR-0003](0003-no-frontend-performance-testing.md)). The load and scale
   test sections, diagrams and estimate rows are removed.
-- `AGENTS.md` lists load and scale testing as out of scope, and `tests/` holds only the
+- `AGENTS.md` lists load and scale testing as out of scope, and `backend/tests/` holds only the
   per-project unit, integration and architecture test projects.
 
 ## Options Considered

@@ -11,5 +11,5 @@ The logo, app icon, favicon and link-preview image are generated, never hand-edi
    `apple-touch-icon.png`, three favicon sizes and `public/media/buttonry-share.jpg`
    (1200 × 630: logo, tagline and the hero photo).
 3. Pack the favicon with Pillow:
-   `python -c "from PIL import Image; i=[Image.open(f'docs/design-system/assets/_icon-{s}.png') for s in (16,32,64)]; i[2].save('src/frontend/projects/buttonry/public/favicon.ico', sizes=[(16,16),(32,32),(64,64)], append_images=i[:2])"`
+   `python -c "from PIL import Image; i=[Image.open(f'docs/design-system/assets/_icon-{s}.png') for s in (16,32,64)]; i[2].save('frontend/projects/buttonry/public/favicon.ico', sizes=[(16,16),(32,32),(64,64)], append_images=i[:2])"`
    then delete the `_icon-*.png` files.

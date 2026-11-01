@@ -120,7 +120,7 @@ colours in both themes; the string and wordmark follow the text colour, or cream
 
 ## Tokens
 
-- `tokens/tokens.css` — source of truth (a copy of `src/frontend/projects/components/src/styles/tokens.css`): Heirloom's
+- `tokens/tokens.css` — source of truth (a copy of `frontend/projects/components/src/styles/tokens.css`): Heirloom's
   base tokens, then the "Heirloom brand palette" block (paper, ink, terracotta, forest and mustard scales, the logo
   tokens and the semantic overrides for both themes), then the "Buttonry layout tokens" block (the 12L layout names
   such as `--color-brand`, `--photo-bg-*` and the stone and signal ramps, each an alias, plus the band tokens

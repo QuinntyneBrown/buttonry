@@ -44,7 +44,7 @@ This design targets the founder-only shop under [ADR general/0010](../../../adr/
 
 The slice runs from the Privacy page through `Buttonry API` down to the stored bytes.
 
-### Frontend (`Buttonry Web`, `src/frontend/src/app/privacy/`)
+### Frontend (`Buttonry Web`, `frontend/src/app/privacy/`)
 
 - **`PrivacyPageComponent`** — static route component at `/privacy`
   (`docs/mocks/pages/privacy/default.html`). It shows the heading "Privacy", the line

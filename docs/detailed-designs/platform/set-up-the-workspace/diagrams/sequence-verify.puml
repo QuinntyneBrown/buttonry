@@ -15,14 +15,14 @@ skinparam package {
   BackgroundColor #F9FAFB
 }
 actor "Developer or CI" as actor
-box "Verify command — src/frontend/package.json" #FFF4E5
+box "Verify command — frontend/package.json" #FFF4E5
   participant "npm run verify" as verify
 end box
-box "Backend — src/backend, tests/" #D1FADF
+box "Backend — backend/src, backend/tests" #D1FADF
   participant "dotnet" as dotnet
   participant "Buttonry.Api (WebApplicationFactory)" as api
 end box
-box "Frontend — src/frontend" #E0F2FE
+box "Frontend — frontend" #E0F2FE
   participant "prettier + eslint" as lint
   participant "ng build" as build
   participant "Playwright (Chromium)" as pw

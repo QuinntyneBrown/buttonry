@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\backend\Buttonry.Domain\Buttonry.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Buttonry.Worker\Buttonry.Worker.csproj" />
   </ItemGroup>
 
 </Project>

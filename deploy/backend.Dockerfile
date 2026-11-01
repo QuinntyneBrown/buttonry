@@ -1,21 +1,21 @@
-# Builds the three backend services from one restore. Build context: src/backend.
-#   docker build -f ../../deploy/backend.Dockerfile --target api .
+# Builds the three backend services from one restore. Build context: backend.
+#   docker build -f ../deploy/backend.Dockerfile --target api .
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY Directory.Build.props global.json Buttonry.sln ./
-COPY Buttonry.Domain/Buttonry.Domain.csproj Buttonry.Domain/
-COPY Buttonry.Application/Buttonry.Application.csproj Buttonry.Application/
-COPY Buttonry.Infrastructure/Buttonry.Infrastructure.csproj Buttonry.Infrastructure/
-COPY Buttonry.Api/Buttonry.Api.csproj Buttonry.Api/
-COPY Buttonry.Worker/Buttonry.Worker.csproj Buttonry.Worker/
-COPY Buttonry.Migrator/Buttonry.Migrator.csproj Buttonry.Migrator/
-RUN dotnet restore Buttonry.Api/Buttonry.Api.csproj \
- && dotnet restore Buttonry.Worker/Buttonry.Worker.csproj \
- && dotnet restore Buttonry.Migrator/Buttonry.Migrator.csproj
+COPY src/Buttonry.Domain/Buttonry.Domain.csproj src/Buttonry.Domain/
+COPY src/Buttonry.Application/Buttonry.Application.csproj src/Buttonry.Application/
+COPY src/Buttonry.Infrastructure/Buttonry.Infrastructure.csproj src/Buttonry.Infrastructure/
+COPY src/Buttonry.Api/Buttonry.Api.csproj src/Buttonry.Api/
+COPY src/Buttonry.Worker/Buttonry.Worker.csproj src/Buttonry.Worker/
+COPY src/Buttonry.Migrator/Buttonry.Migrator.csproj src/Buttonry.Migrator/
+RUN dotnet restore src/Buttonry.Api/Buttonry.Api.csproj \
+ && dotnet restore src/Buttonry.Worker/Buttonry.Worker.csproj \
+ && dotnet restore src/Buttonry.Migrator/Buttonry.Migrator.csproj
 COPY . .
-RUN dotnet publish Buttonry.Api/Buttonry.Api.csproj -c Release --no-restore -o /out/api \
- && dotnet publish Buttonry.Worker/Buttonry.Worker.csproj -c Release --no-restore -o /out/worker \
- && dotnet publish Buttonry.Migrator/Buttonry.Migrator.csproj -c Release --no-restore -o /out/migrator
+RUN dotnet publish src/Buttonry.Api/Buttonry.Api.csproj -c Release --no-restore -o /out/api \
+ && dotnet publish src/Buttonry.Worker/Buttonry.Worker.csproj -c Release --no-restore -o /out/worker \
+ && dotnet publish src/Buttonry.Migrator/Buttonry.Migrator.csproj -c Release --no-restore -o /out/migrator
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS api
 WORKDIR /app

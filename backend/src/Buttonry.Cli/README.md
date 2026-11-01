@@ -33,7 +33,7 @@ the demo is already there changes nothing; `seed --reset` always gives the same 
 
 ## Usage
 
-From `src/backend`, with the database settings of the root README:
+From `backend/src`, with the database settings of the root README:
 
 ```bash
 dotnet build Buttonry.Cli

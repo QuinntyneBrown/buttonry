@@ -26,7 +26,7 @@ Application code and HTML mocks still require alignment with the revised require
 
 ### Implementation evidence
 
-Completed behavior evidence: `reject-google-callback` in `src/backend/Buttonry.Application/Accounts/GoogleSignIn.cs` and `src/frontend/e2e/tests/sign-in-with-google.spec.ts`. 1 of 3 target behaviors are counted. Remaining target behavior and acceptance checks are not counted merely because older marketplace tests pass.
+Completed behavior evidence: `reject-google-callback` in `backend/src/Buttonry.Application/Accounts/GoogleSignIn.cs` and `frontend/e2e/tests/sign-in-with-google.spec.ts`. 1 of 3 target behaviors are counted. Remaining target behavior and acceptance checks are not counted merely because older marketplace tests pass.
 
 Effort in the matching estimate is the full target feature effort in developer-days, not remaining work. Completion counts whole verified behaviors and rounds to the nearest ten percent. Source and existing acceptance tests supply the evidence; this documentation refresh does not execute new target tests.
 

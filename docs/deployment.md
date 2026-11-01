@@ -161,7 +161,7 @@ turn it on; the steps below are the owner's, outside the repository.
 To turn the feature off, remove both lines and restart `api`; existing Google-linked members then
 need a password reset (`L2-009`, not built yet) to sign in.
 
-Locally, keep the values out of `appsettings*.json` and use user secrets from `src/backend/Buttonry.Api`:
+Locally, keep the values out of `appsettings*.json` and use user secrets from `backend/src/Buttonry.Api`:
 
 ```bash
 dotnet user-secrets init

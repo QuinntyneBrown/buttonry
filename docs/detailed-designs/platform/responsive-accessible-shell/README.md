@@ -37,7 +37,7 @@ Source mocks: the shell in `docs/mocks/_build/mk.py` (`topbar`,
 with tokens in `docs/mocks/assets/tokens.css` and components in
 `docs/mocks/assets/ui.css`.
 
-### Frontend — shell components (`src/frontend/projects/buttonry/src/app/` and `projects/components/`)
+### Frontend — shell components (`frontend/projects/buttonry/src/app/` and `projects/components/`)
 
 Per `AGENTS.md`, the application project holds `AppComponent`, the four shell components and the routes; every reusable piece below (`bt-skip-link`, `bt-top-bar`, `bt-footer`, `bt-toast-region`, sheets, dialogs, form fields) lives in the `components` library (`@buttonry/components`). Feature libraries never re-implement them.
 
@@ -77,7 +77,7 @@ Per `AGENTS.md`, the application project holds `AppComponent`, the four shell co
   "Close menu" button that receives initial focus. Body: category links (large),
   then role-appropriate account links from the same capability source as the topbar. Guests see shopping, Sign in and Join. The sheet closes after navigation and at its existing responsive breakpoint. No customer sees selling, sales-management or public-profile links.
 
-### Frontend — shared behaviour (`src/frontend/projects/components/src/lib/`)
+### Frontend — shared behaviour (`frontend/projects/components/src/lib/`)
 
 - **`BreakpointService`** — wraps CDK `BreakpointObserver` with the queries
   `(min-width: 36rem)`, `(min-width: 48rem)`, `(min-width: 62rem)` and
@@ -151,7 +151,7 @@ Per `AGENTS.md`, the application project holds `AppComponent`, the four shell co
 - **Themes** — light and dark through `prefers-color-scheme` and the tokens in
   `tokens.css`; `forced-colors` mode uses system colours.
 
-### CI (`src/frontend/e2e`)
+### CI (`frontend/e2e`)
 
 The harness is created by [set-up-the-workspace](../set-up-the-workspace/README.md) with one smoke test; the specs below are added by this feature.
 

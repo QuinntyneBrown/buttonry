@@ -3,14 +3,14 @@
 LAYOUT_WITH_LEGEND()
 title Components — Set up the workspace
 
-Container_Boundary(web, "Buttonry Web (src/frontend)") {
+Container_Boundary(web, "Buttonry Web (frontend)") {
   Component(app, "projects/buttonry", "Application", "AppComponent, AppShellComponent, HomePlaceholderPage, app.routes.ts")
   Component(feat, "projects/accounts … privacy", "Six feature libraries", "Empty lazy route tables")
   Component(apilib, "projects/api", "Library @buttonry/api", "provideApi(), API_BASE_URL")
   Component(comps, "projects/components", "Library @buttonry/components", "tokens.css, components.css, bt-skip-link, bt-logo, bt-top-bar, bt-footer, bt-toast-region")
   Component(e2e, "e2e/", "Playwright", "shell.page.ts, shell.spec.ts")
 }
-Container_Boundary(be, "Buttonry API (src/backend)") {
+Container_Boundary(be, "Buttonry API (backend/src)") {
   Component(apiproj, "Buttonry.Api", "ASP.NET Core", "HealthController: GET /api/health")
   Component(appproj, "Buttonry.Application", "Class library", "Marker only")
   Component(dom, "Buttonry.Domain", "Class library", "Marker only")
@@ -18,7 +18,7 @@ Container_Boundary(be, "Buttonry API (src/backend)") {
   Component(worker, "Buttonry.Worker", "Worker service", "Empty hosted service")
   Component(mig, "Buttonry.Migrator", "Console", "No migrations yet")
 }
-Container_Boundary(t, "tests/") {
+Container_Boundary(t, "backend/tests") {
   Component(apitests, "Buttonry.Api.Tests", "xUnit", "HealthEndpointTests, StatelessApiTests (L2-060)")
   Component(other, "Buttonry.*.Tests", "xUnit", "One smoke test each")
 }

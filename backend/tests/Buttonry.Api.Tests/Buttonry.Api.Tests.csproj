@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\backend\Buttonry.Api\Buttonry.Api.csproj" />
+    <ProjectReference Include="..\..\src\Buttonry.Api\Buttonry.Api.csproj" />
   </ItemGroup>
 
 </Project>

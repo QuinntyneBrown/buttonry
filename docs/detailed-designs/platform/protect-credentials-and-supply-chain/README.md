@@ -90,7 +90,7 @@ This design targets the founder-only shop under [ADR general/0010](../../../adr/
   readiness probe and the deployment rolls back.
 - **`appsettings.json` and `appsettings.Production.json`** — hold no value for
   any key in `SecretKeys.All`; the keys are absent.
-- **Frontend configuration** — `src/frontend/src/environments/*.ts` holds only
+- **Frontend configuration** — `frontend/src/environments/*.ts` holds only
   public values: API base URL and the payment provider's publishable key. No
   secret is bundled into `Buttonry Web`.
 
@@ -106,7 +106,7 @@ default branch (repository setting).
   reason comment.
 - **`dependency-scan`** — runs on lock files only, so transitive packages are
   scanned. `Directory.Build.props` sets `RestorePackagesWithLockFile=true` so
-  every .NET project has `packages.lock.json`; `src/frontend/package-lock.json`
+  every .NET project has `packages.lock.json`; `frontend/package-lock.json`
   covers npm. Trivy `fs` scans both with `--severity HIGH,CRITICAL
   --ignore-unfixed --exit-code 1`, so a high or critical vulnerability that has
   a fix fails the build and the log names the package, installed version and

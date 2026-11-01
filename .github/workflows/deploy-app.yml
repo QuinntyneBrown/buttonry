@@ -41,15 +41,15 @@ jobs:
         include:
           - name: api
             file: deploy/backend.Dockerfile
-            context: src/backend
+            context: backend
             target: api
           - name: worker
             file: deploy/backend.Dockerfile
-            context: src/backend
+            context: backend
             target: worker
           - name: migrator
             file: deploy/backend.Dockerfile
-            context: src/backend
+            context: backend
             target: migrator
           - name: app
             file: deploy/app/Dockerfile

@@ -13,7 +13,7 @@ Linux CI. Separate per-stack commands drift: CI runs one set, developers another
 
 ## Decision
 
-`npm run verify` in `src/frontend` is the single verify command. It runs, in order and
+`npm run verify` in `frontend` is the single verify command. It runs, in order and
 stopping at the first failure: `dotnet restore`, `dotnet format --verify-no-changes`,
 `dotnet build --no-restore -warnaserror` and `dotnet test --no-build` on
 `../backend/Buttonry.sln`, then `lint` (Prettier and ESLint), `build:all` (every library,
@@ -22,7 +22,7 @@ fixture API responses). CI runs exactly this command.
 
 ## Options Considered
 
-### Option 1: npm script in src/frontend (chosen)
+### Option 1: npm script in frontend (chosen)
 - **Pros:** npm is already required; scripts run identically on Windows and Linux; no extra tool.
 - **Cons:** The backend steps live in a frontend `package.json`.
 

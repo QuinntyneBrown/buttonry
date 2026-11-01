@@ -3,9 +3,9 @@
 # Build context: the repository root.
 FROM node:22-alpine AS build
 WORKDIR /src
-COPY src/frontend/package.json src/frontend/package-lock.json ./
+COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
-COPY src/frontend/ .
+COPY frontend/ .
 RUN npm run build:marketing -- --base-href /welcome/
 
 FROM caddy:2-alpine

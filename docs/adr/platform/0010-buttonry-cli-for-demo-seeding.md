@@ -25,7 +25,7 @@ and processed by the same pipeline as uploads (`L2-017`, `L2-059`,
 
 ### A separate developer tool project
 
-Add `src/backend/Buttonry.Cli/` (console, `Buttonry.Cli.dll`) and `tests/Buttonry.Cli.Tests/`
+Add `backend/src/Buttonry.Cli/` (console, `Buttonry.Cli.dll`) and `backend/tests/Buttonry.Cli.Tests/`
 to `Buttonry.sln` and to the `AGENTS.md` folder tree. It has two commands:
 
 - `reset [--force]` drops the database, applies every migration and empties the photo store
@@ -65,7 +65,7 @@ that built this feature. The photos come instead from the
 images are Flickr photographs under the Creative Commons Attribution 2.0 licence, with the
 author and original page listed for every image.
 
-- 24 photos, 6 per category, committed under `src/backend/Buttonry.Cli/SeedPhotos/{Dresses,
+- 24 photos, 6 per category, committed under `backend/src/Buttonry.Cli/SeedPhotos/{Dresses,
   Tops, Outerwear, Bottoms}/`, each under 200 KB (about 2.4 MB in total). Listings reuse
   them; stored versions are content-addressed, so a reused photo is stored once.
 - Chosen by hand: one item on a plain or simple background, no person, no logo or

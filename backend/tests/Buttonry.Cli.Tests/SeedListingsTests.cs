@@ -90,7 +90,7 @@ public sealed class SeedListingsTests(SeededDemo demo) : IClassFixture<SeededDem
     [Fact]
     public async Task Every_brand_is_a_suggested_brand_of_the_api()
     {
-        await using var settings = File.OpenRead(RepositoryFiles.PathOf("src", "backend", "Buttonry.Api", "appsettings.json"));
+        await using var settings = File.OpenRead(RepositoryFiles.PathOf("backend", "src", "Buttonry.Api", "appsettings.json"));
         using var json = await JsonDocument.ParseAsync(settings);
         var suggested = json.RootElement.GetProperty("Selling").GetProperty("SuggestedBrands").EnumerateArray().Select(b => b.GetString()).ToHashSet();
         var brands = demo.Harness.InDatabase(db => db.Listings.Select(l => l.Brand).Distinct().ToList());

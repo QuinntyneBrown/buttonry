@@ -40,7 +40,7 @@ The page URL is the single source of truth for a result set. `catalog-query.ts` 
 
 The mock example `/?category=jewelry&condition=new-with-tags&min=20&max=200&sort=price-asc` is a valid URL under this contract. `toParams` writes parameters in the fixed order above and omits defaults, so one result set has one canonical URL. A `subcategory` is only valid with its parent `category`. Values the page does not recognise are dropped and the URL is replaced (`replaceUrl: true`) with its canonical form; parameters the catalog does not own (such as `from=sign-in`) are kept. Paging is not held in the URL; reopening a URL shows its first page. The four category pages (`/jewelry`, `/clothing`, `/housewares`, `/electronics`) from browse-catalog fix the category through route data (`pageCategory`, not `category`, because input binding would also fill an input named `category` from the query string); any filter change there navigates to `/` with the category kept.
 
-### Frontend — `Buttonry Web`, feature library `@buttonry/catalog` (`src/frontend/projects/catalog/src/lib/`)
+### Frontend — `Buttonry Web`, feature library `@buttonry/catalog` (`frontend/projects/catalog/src/lib/`)
 
 - **`CatalogQuery`** (`catalog/catalog-query.ts`) — `{ q; category; subcategories; brands; conditions; min; max; sort }` with the slugs of the URL. The same file holds the category, subcategory, condition and sort option lists (`CATEGORIES`, `CONDITIONS`, `SORTS`) and pure functions `parseQuery(ParamMap)`, `toParams(query)`, `canonicalParams(params, query)`, `priceError(query)` and `chipsOf(query)`.
 - **`CatalogPage`** (from browse-catalog, `catalog/catalog-page.ts`) — subscribes to `ActivatedRoute.queryParamMap` in `ngOnInit`, replaces a non-canonical URL, and otherwise calls `CatalogStore.load(params)` once per distinct result set, so the back button, a bookmark and a shared link all go through one path. Every filter, chip, sort and clear action navigates to `/` with the new query. The page header:
@@ -98,8 +98,8 @@ No change. The handlers query `IButtonryDbContext`; there is no full-text index,
 
 ### Tests
 
-- `tests/Buttonry.Api.Tests/SearchAndFilterCatalogTests.cs` — the API on SQLite in-memory: keyword in title and brand ignoring case, ranking, truncation, AND and OR combinations, inclusive prices with both price sorts, both 400 codes, the count and the brands.
-- `src/frontend/e2e/tests/search-and-filter-catalog.spec.ts` with `e2e/pages/catalog-filters.page.ts` — every Buttonry API call served by `page.route` (`serveSearch` in `e2e/fixtures.ts`): top-bar search, truncation, the sidebar at 1280 px and its URL surviving reload, chips and Clear all, the brand list, the invalid price range in the sidebar and in the sheet, the full-screen sheet at 390 px, the side panel at 800 px, no results and URL canonicalisation.
+- `backend/tests/Buttonry.Api.Tests/SearchAndFilterCatalogTests.cs` — the API on SQLite in-memory: keyword in title and brand ignoring case, ranking, truncation, AND and OR combinations, inclusive prices with both price sorts, both 400 codes, the count and the brands.
+- `frontend/e2e/tests/search-and-filter-catalog.spec.ts` with `e2e/pages/catalog-filters.page.ts` — every Buttonry API call served by `page.route` (`serveSearch` in `e2e/fixtures.ts`): top-bar search, truncation, the sidebar at 1280 px and its URL surviving reload, chips and Clear all, the brand list, the invalid price range in the sidebar and in the sheet, the full-screen sheet at 390 px, the side panel at 800 px, no results and URL canonicalisation.
 
 ### Deferred
 
