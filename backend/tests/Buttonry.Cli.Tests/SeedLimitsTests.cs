@@ -54,8 +54,8 @@ public sealed class SeedLimitsTests
     [Fact]
     public void Every_catalogue_photo_is_committed_and_attributed()
     {
-        var attribution = File.ReadAllText(RepositoryFiles.PathOf("src", "backend", "Buttonry.Cli", "SeedPhotos", "ATTRIBUTION.md"));
-        var committed = Directory.GetFiles(RepositoryFiles.PathOf("src", "backend", "Buttonry.Cli", "SeedPhotos"), "*.jpg", SearchOption.AllDirectories);
+        var attribution = File.ReadAllText(RepositoryFiles.PathOf("backend", "src", "Buttonry.Cli", "SeedPhotos", "ATTRIBUTION.md"));
+        var committed = Directory.GetFiles(RepositoryFiles.PathOf("backend", "src", "Buttonry.Cli", "SeedPhotos"), "*.jpg", SearchOption.AllDirectories);
 
         Assert.All(DemoCatalogue.PhotoFiles, f => Assert.Contains($"`{f}`", attribution));
         Assert.Equal(committed.Length, DemoCatalogue.PhotoFiles.Count);

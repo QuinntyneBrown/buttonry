@@ -42,7 +42,7 @@ git clone https://github.com/QuinntyneBrown/buttonry.git
 cd buttonry
 ```
 
-Buttonry is a full-stack web application: an Angular frontend in `src/frontend` and a .NET (ASP.NET Core) backend in `src/backend`. See the [README](README.md#getting-started) for prerequisites, how to run it locally and how to load demo data. Run `npm run verify` from `src/frontend` before every commit; it is the same command CI runs.
+Buttonry is a full-stack web application: an Angular frontend in `frontend` and a .NET (ASP.NET Core) backend in `backend`. See the [README](README.md#getting-started) for prerequisites, how to run it locally and how to load demo data. Run `npm run verify` from `frontend` before every commit; it is the same command CI runs.
 
 ## Making changes
 

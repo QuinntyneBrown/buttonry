@@ -3,7 +3,7 @@
 Sources: `docs/mocks/` (every page, dialog and notification in every state, see
 [`docs/mocks/index.html`](mocks/index.html)) and the component catalogue in
 [`docs/design-system/README.md`](design-system/README.md), which the `components` library
-(`src/frontend/projects/components/`, alias `@buttonry/components`) implements one to one.
+(`frontend/projects/components/`, alias `@buttonry/components`) implements one to one.
 
 "Library" names the `sy-*` components, directives and services of `@buttonry/components` that a
 screen is composed of. "Local UI" is markup a feature library builds itself because no

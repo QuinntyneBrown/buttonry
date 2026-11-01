@@ -28,7 +28,7 @@ Application code and HTML mocks still require alignment with the revised require
 
 ### Implementation evidence
 
-Completed behavior evidence: `retry-video` in `src/frontend/projects/marketing/src/lib/welcome/pitch-video-dialog.ts` and `src/frontend/e2e/tests/marketing-page.spec.ts`. 1 of 3 target behaviors are counted. Remaining target behavior and acceptance checks are not counted merely because older marketplace tests pass.
+Completed behavior evidence: `retry-video` in `frontend/projects/marketing/src/lib/welcome/pitch-video-dialog.ts` and `frontend/e2e/tests/marketing-page.spec.ts`. 1 of 3 target behaviors are counted. Remaining target behavior and acceptance checks are not counted merely because older marketplace tests pass.
 
 Effort in the matching estimate is the full target feature effort in developer-days, not remaining work. Completion counts whole verified behaviors and rounds to the nearest ten percent. Source and existing acceptance tests supply the evidence; this documentation refresh does not execute new target tests.
 

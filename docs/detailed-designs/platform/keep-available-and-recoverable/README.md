@@ -98,7 +98,7 @@ support; infrastructure-as-code files live under the existing `deploy/` configur
   down for planned maintenance. Orders and payments are safe.", primary "Check
   status" (calls the status endpoint and returns to the previous route when
   maintenance has ended).
-- **Static maintenance page** — `src/frontend/public/maintenance/index.html`, a
+- **Static maintenance page** — `frontend/public/maintenance/index.html`, a
   self-contained HTML file with a linked stylesheet built from the tokens, no script, and the same copy,
   with the end time filled in at deploy. During a window that also takes the web
   host down, the load balancer serves it for all page routes with HTTP 503 and

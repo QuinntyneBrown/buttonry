@@ -3,33 +3,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Api", "Buttonry.Api\Buttonry.Api.csproj", "{EFEC6F80-5ECA-4A08-81D0-EEDB23917D7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Api", "src\Buttonry.Api\Buttonry.Api.csproj", "{EFEC6F80-5ECA-4A08-81D0-EEDB23917D7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Application", "Buttonry.Application\Buttonry.Application.csproj", "{56167AA9-5178-489E-81E9-BE9DB4D8CBF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Application", "src\Buttonry.Application\Buttonry.Application.csproj", "{56167AA9-5178-489E-81E9-BE9DB4D8CBF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Domain", "Buttonry.Domain\Buttonry.Domain.csproj", "{6FF85A50-ED33-466D-BC3A-27216E9C70AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Domain", "src\Buttonry.Domain\Buttonry.Domain.csproj", "{6FF85A50-ED33-466D-BC3A-27216E9C70AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Infrastructure", "Buttonry.Infrastructure\Buttonry.Infrastructure.csproj", "{28EC6D2E-D39E-43B6-A485-1DB5E652E408}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Infrastructure", "src\Buttonry.Infrastructure\Buttonry.Infrastructure.csproj", "{28EC6D2E-D39E-43B6-A485-1DB5E652E408}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Migrator", "Buttonry.Migrator\Buttonry.Migrator.csproj", "{041DB6C9-F786-4E0A-9B65-3BD0A538A099}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Migrator", "src\Buttonry.Migrator\Buttonry.Migrator.csproj", "{041DB6C9-F786-4E0A-9B65-3BD0A538A099}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Worker", "Buttonry.Worker\Buttonry.Worker.csproj", "{CC1A4297-E2F6-4759-B37A-26502E145B0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Worker", "src\Buttonry.Worker\Buttonry.Worker.csproj", "{CC1A4297-E2F6-4759-B37A-26502E145B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Api.Tests", "..\..\tests\Buttonry.Api.Tests\Buttonry.Api.Tests.csproj", "{0FED7872-25C2-4096-B70A-3904DFC6B44F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Api.Tests", "tests\Buttonry.Api.Tests\Buttonry.Api.Tests.csproj", "{0FED7872-25C2-4096-B70A-3904DFC6B44F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Application.Tests", "..\..\tests\Buttonry.Application.Tests\Buttonry.Application.Tests.csproj", "{A8C5395B-F40F-45F1-9A32-D876BDB9345D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Application.Tests", "tests\Buttonry.Application.Tests\Buttonry.Application.Tests.csproj", "{A8C5395B-F40F-45F1-9A32-D876BDB9345D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Domain.Tests", "..\..\tests\Buttonry.Domain.Tests\Buttonry.Domain.Tests.csproj", "{32B69B31-142F-470D-87D8-0F890992E8CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Domain.Tests", "tests\Buttonry.Domain.Tests\Buttonry.Domain.Tests.csproj", "{32B69B31-142F-470D-87D8-0F890992E8CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Infrastructure.Tests", "..\..\tests\Buttonry.Infrastructure.Tests\Buttonry.Infrastructure.Tests.csproj", "{29BFFD94-D814-4B48-85B8-6AB7BF6CE546}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Infrastructure.Tests", "tests\Buttonry.Infrastructure.Tests\Buttonry.Infrastructure.Tests.csproj", "{29BFFD94-D814-4B48-85B8-6AB7BF6CE546}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Migrator.Tests", "..\..\tests\Buttonry.Migrator.Tests\Buttonry.Migrator.Tests.csproj", "{CE48CAF8-F69D-427C-A634-9DC0958649B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Migrator.Tests", "tests\Buttonry.Migrator.Tests\Buttonry.Migrator.Tests.csproj", "{CE48CAF8-F69D-427C-A634-9DC0958649B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Worker.Tests", "..\..\tests\Buttonry.Worker.Tests\Buttonry.Worker.Tests.csproj", "{658D6AEB-B869-40E1-A83D-03732F8F2A94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Worker.Tests", "tests\Buttonry.Worker.Tests\Buttonry.Worker.Tests.csproj", "{658D6AEB-B869-40E1-A83D-03732F8F2A94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Cli", "Buttonry.Cli\Buttonry.Cli.csproj", "{DA8BBB02-AC19-4BAC-BFFE-CEE467C6178F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Cli", "src\Buttonry.Cli\Buttonry.Cli.csproj", "{DA8BBB02-AC19-4BAC-BFFE-CEE467C6178F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Cli.Tests", "..\..\tests\Buttonry.Cli.Tests\Buttonry.Cli.Tests.csproj", "{A709B897-F8E1-4A8E-916B-A9DD65FB7DBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttonry.Cli.Tests", "tests\Buttonry.Cli.Tests\Buttonry.Cli.Tests.csproj", "{A709B897-F8E1-4A8E-916B-A9DD65FB7DBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

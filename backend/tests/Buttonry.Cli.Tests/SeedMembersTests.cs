@@ -81,7 +81,7 @@ public sealed class SeedMembersTests(SeededDemo demo) : IClassFixture<SeededDemo
     [Fact]
     public async Task The_cli_readme_documents_the_demo_password_for_local_use_only()
     {
-        var readme = await File.ReadAllTextAsync(RepositoryFiles.PathOf("src", "backend", "Buttonry.Cli", "README.md"));
+        var readme = await File.ReadAllTextAsync(RepositoryFiles.PathOf("backend", "src", "Buttonry.Cli", "README.md"));
 
         Assert.Contains(DemoCatalogue.Password, readme);
         Assert.Contains("local use only", readme);

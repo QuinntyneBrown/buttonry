@@ -15,14 +15,14 @@ by the static host.
 
 ## Decision
 
-- Add the `marketing` library: `src/frontend/projects/marketing/`, alias `@buttonry/marketing`,
+- Add the `marketing` library: `frontend/projects/marketing/`, alias `@buttonry/marketing`,
   registered in `angular.json`, `tsconfig.json` and `build:libs`. It exports its lazy routes and
   holds `WelcomePage`. The app mounts it at `welcome`.
 - Reusable pieces go to `@buttonry/components`: `bt-marketing-hero`, `bt-feature-band`,
   `bt-steps` and `bt-quote`.
 - Add a `marketing` shell value: routes with `data.shell = 'marketing'` get the same top bar
   and footer but `<main id="main" class="marketing">` without the container.
-- Page media live in `src/frontend/projects/buttonry/public/media/` (served at `/media/`):
+- Page media live in `frontend/projects/buttonry/public/media/` (served at `/media/`):
   the hero photo `buttonry-hero.jpg` (also the video poster), the founder photo
   `buttonry-founder.jpg`, the 1200×630 share image `buttonry-share.jpg` and the pitch video
   `buttonry-pitch.mp4`, `buttonry-pitch.webm` and `buttonry-pitch.vtt`

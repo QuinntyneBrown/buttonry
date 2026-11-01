@@ -32,7 +32,7 @@ Source mocks: `docs/mocks/pages/server-error/`, `docs/mocks/pages/not-found/`,
 `docs/mocks/notifications/toast/` (`danger`) and
 `docs/mocks/notifications/system-banner/` (`warning`, `success`, `danger`).
 
-### Frontend (`src/frontend/src/app/core/errors`)
+### Frontend (`frontend/src/app/core/errors`)
 
 - **`AppError`** — discriminated union produced from every failed API call:
   `kind` (`'offline' | 'validation' | 'not-found' | 'forbidden' |

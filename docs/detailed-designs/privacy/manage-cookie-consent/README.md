@@ -39,7 +39,7 @@ This design targets the founder-only shop under [ADR general/0010](../../../adr/
 ### Frontend (`Buttonry Web`, `@buttonry/privacy` and `@buttonry/components`)
 
 The consent code lives in the `privacy` feature library
-(`src/frontend/projects/privacy/src/lib/consent/` and `.../cookie-settings/`). It is exported
+(`frontend/projects/privacy/src/lib/consent/` and `.../cookie-settings/`). It is exported
 to the application shell and loaded with it, not with a lazy route, because the banner appears
 on the first page a visitor opens. It makes no call to `Buttonry API`, so `@buttonry/api` is not involved.
 Decisions are recorded in [ADR privacy/0001](../../../adr/privacy/0001-cookie-consent-in-the-browser-and-a-placeholder-analytics-provider.md).
@@ -145,13 +145,13 @@ whose script sets the `_sya` cookie. The `consent` fixture option starts every o
   - withdraw: with analytics accepted, footer "Cookie settings", analytics off, Save, and the
     analytics cookie is gone and focus is back on the footer button (criterion 3); Cancel
     changes nothing.
-- **xUnit, `tests/Buttonry.Api.Tests/CookieConsentTests.cs`** — calls a sample of endpoints,
+- **xUnit, `backend/tests/Buttonry.Api.Tests/CookieConsentTests.cs`** — calls a sample of endpoints,
   signed out and signed in, and asserts every `Set-Cookie` name is strictly necessary; a stray
   cookie set by a test-only endpoint is removed.
 
 ### Implementation evidence
 
-Completed behavior evidence: `all` in `src/frontend/projects/privacy/src/lib/consent/cookie-consent.service.ts` and `src/frontend/e2e/tests/manage-cookie-consent.spec.ts`. 2 of 2 target behaviors are counted. Other behavior remains uncounted until its target implementation and acceptance coverage exist.
+Completed behavior evidence: `all` in `frontend/projects/privacy/src/lib/consent/cookie-consent.service.ts` and `frontend/e2e/tests/manage-cookie-consent.spec.ts`. 2 of 2 target behaviors are counted. Other behavior remains uncounted until its target implementation and acceptance coverage exist.
 
 Effort in the matching estimate is the full target feature effort in developer-days, not remaining work. Completion counts whole verified behaviors and rounds to the nearest ten percent. Source and existing acceptance tests supply the evidence; this documentation refresh does not execute new target tests.
 

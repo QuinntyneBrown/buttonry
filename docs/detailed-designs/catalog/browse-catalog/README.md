@@ -24,7 +24,7 @@ The slice runs from the catalog page in `Buttonry Web` through `Buttonry API` to
 
 ### Frontend — `Buttonry Web`
 
-Feature library `@buttonry/catalog` (`src/frontend/projects/catalog/src/lib/`), API client in `@buttonry/api`, shared UI in `@buttonry/components`.
+Feature library `@buttonry/catalog` (`frontend/projects/catalog/src/lib/`), API client in `@buttonry/api`, shared UI in `@buttonry/components`.
 
 - **`routes`** (`catalog.routes.ts`) — mounted by the application at `''`. `''` (full match) and the category paths `jewelry`, `clothing`, `housewares` and `electronics` lazy-load `CatalogPage`, titled "{Category} · Buttonry"; each category route carries `data.pageCategory` (`Jewelry`, `Clothing`, `Housewares`, `Electronics`), bound to the page's `category` input. No guard, so anonymous visitors reach every route. These are the links of the top bar.
 - **`CatalogPage`** (`catalog/catalog-page`) — renders the hero ("Treasures with a *story.*" and the lead "Vintage jewelry, clothing, housewares and electronics, every piece at least 20 years old, from families downsizing a lifetime of treasures.") at `/`, or a page header with the category name and a large `bt-size-tag` on a category page; then the toolbar with the polite item count and the grid. It reads all state from `CatalogStore` and renders exactly one view:
@@ -67,8 +67,8 @@ Feature library `@buttonry/catalog` (`src/frontend/projects/catalog/src/lib/`), 
 
 ### Testing
 
-- xUnit acceptance tests `tests/Buttonry.Api.Tests/BrowseCatalogTests.cs` host the API in memory with SQLite in-memory: visibility and order, card fields and photo `srcset`, paging, the page-size cap, validation and the category filter.
-- Playwright `src/frontend/e2e/tests/browse-catalog.spec.ts` with page object `e2e/pages/catalog.page.ts` serves `Buttonry API` through `page.route` fixtures (`serveCatalog`, `catalogCard`, `catalogPage` in `e2e/fixtures.ts`): cards and Load more, Reserved and price formatting, `picture` markup, 2, 3 and 4 columns at 375, 800 and 1280 px, no horizontal scroll at 320 px, category routes, loading, empty, error, next-page failure and offline.
+- xUnit acceptance tests `backend/tests/Buttonry.Api.Tests/BrowseCatalogTests.cs` host the API in memory with SQLite in-memory: visibility and order, card fields and photo `srcset`, paging, the page-size cap, validation and the category filter.
+- Playwright `frontend/e2e/tests/browse-catalog.spec.ts` with page object `e2e/pages/catalog.page.ts` serves `Buttonry API` through `page.route` fixtures (`serveCatalog`, `catalogCard`, `catalogPage` in `e2e/fixtures.ts`): cards and Load more, Reserved and price formatting, `picture` markup, 2, 3 and 4 columns at 375, 800 and 1280 px, no horizontal scroll at 320 px, category routes, loading, empty, error, next-page failure and offline.
 
 ### Deferred
 

@@ -15,10 +15,10 @@ ships. Installed on the development machine on the decision date: .NET SDKs 8.0.
 
 ## Decision
 
-- Backend targets `net10.0` with the .NET 10 SDK pinned in `src/backend/global.json`
+- Backend targets `net10.0` with the .NET 10 SDK pinned in `backend/global.json`
   (`rollForward: latestFeature`). .NET 10 is the current long-term-support release.
 - Frontend is an Angular 22 workspace created with Angular CLI 22, on Node 22 LTS
-  (`engines.node >= 22` in `src/frontend/package.json`). CI installs the same majors.
+  (`engines.node >= 22` in `frontend/package.json`). CI installs the same majors.
 - Playwright runs Chromium only, per `AGENTS.md`.
 
 ## Options Considered
@@ -48,8 +48,8 @@ ships. Installed on the development machine on the decision date: .NET SDKs 8.0.
 
 ## Implementation Notes
 
-- `src/backend/global.json`, `Directory.Build.props` (`TargetFramework` net10.0).
-- `src/frontend/package.json` `engines`; `.github/workflows/ci.yml` uses `actions/setup-node` 22 and `actions/setup-dotnet` 10.0.x.
+- `backend/global.json`, `Directory.Build.props` (`TargetFramework` net10.0).
+- `frontend/package.json` `engines`; `.github/workflows/ci.yml` uses `actions/setup-node` 22 and `actions/setup-dotnet` 10.0.x.
 
 ## References
 

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\backend\Buttonry.Application\Buttonry.Application.csproj" />
+    <ProjectReference Include="..\..\src\Buttonry.Infrastructure\Buttonry.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

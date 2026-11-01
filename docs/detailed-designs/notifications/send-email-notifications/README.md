@@ -28,7 +28,7 @@ Application code and HTML mocks still require alignment with the revised require
 
 ### Implementation evidence
 
-Completed behavior evidence: `dispatch-email` in `src/backend/Buttonry.Application/Notifications/DispatchEmails.cs` and `tests/Buttonry.Api.Tests/EmailNotificationTests.cs`. 1 of 2 target behaviors are counted. Other behavior remains uncounted until its target implementation and acceptance coverage exist.
+Completed behavior evidence: `dispatch-email` in `backend/src/Buttonry.Application/Notifications/DispatchEmails.cs` and `backend/tests/Buttonry.Api.Tests/EmailNotificationTests.cs`. 1 of 2 target behaviors are counted. Other behavior remains uncounted until its target implementation and acceptance coverage exist.
 
 Effort in the matching estimate is the full target feature effort in developer-days, not remaining work. Completion counts whole verified behaviors and rounds to the nearest ten percent. Source and existing acceptance tests supply the evidence; this documentation refresh does not execute new target tests.
 

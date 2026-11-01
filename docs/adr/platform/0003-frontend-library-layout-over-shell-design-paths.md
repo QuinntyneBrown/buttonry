@@ -8,7 +8,7 @@
 ## Context
 
 The responsive-accessible-shell design and other early designs place frontend code under
-`src/frontend/src/app/core/...` and `src/frontend/src/app/shared/...`. `AGENTS.md` later
+`frontend/src/app/core/...` and `frontend/src/app/shared/...`. `AGENTS.md` later
 mandated an Angular workspace with one application (`projects/buttonry`) and one library
 per area (`api`, `components` and six feature libraries).
 

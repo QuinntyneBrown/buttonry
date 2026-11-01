@@ -2,7 +2,7 @@
 
 Copy rules (ADR general/0005): headlines of 3 to 6 words, one supporting line, scannable
 points; everything is vintage (at least 20 years old) and the copy never promises anything
-newer. The copy is identical to the app's WelcomePage (src/frontend/projects/marketing/src/lib/welcome/).
+newer. The copy is identical to the app's WelcomePage (frontend/projects/marketing/src/lib/welcome/).
 
 Look (Heirloom, from the landing page): the hero sits on paper beside the hero photo; the
 From my collection band and the closing band are terracotta with cream text and ink buttons; Our

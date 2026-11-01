@@ -79,6 +79,6 @@ lower-cased names with spaces turned into hyphens (`brooches-and-pins`, `typewri
 
 - `docs/specs/L1.md` (`L1-003`), `docs/specs/L2.md` (`L2-011` to `L2-013`, `L2-022` to `L2-024`,
   `L2-075`)
-- `src/backend/Buttonry.Domain/Listings/CategoryCatalog.cs`
+- `backend/src/Buttonry.Domain/Listings/CategoryCatalog.cs`
 - [create-listing design](../../detailed-designs/listings/create-listing/README.md)
 - [ADR-0009](0009-cloned-from-tutumuch.md)

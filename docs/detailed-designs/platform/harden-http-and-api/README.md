@@ -37,7 +37,7 @@ The slice runs from the browser through the load balancer into the ASP.NET Core
 middleware pipeline, the MediatR pipeline and EF Core. It ends in CI, where
 static checks stop regressions.
 
-### Frontend (`Buttonry Web`, `src/frontend/src/app/core/http`)
+### Frontend (`Buttonry Web`, `frontend/src/app/core/http`)
 
 - **`index.html` and build settings** — the production build emits no inline
   script. `angular.json` sets `optimization.styles.inlineCritical` to `false`,
@@ -73,7 +73,7 @@ static checks stop regressions.
   again later." (pattern from `docs/mocks/dialogs/verify-email-prompt/limited.html`).
 - **Output encoding** — templates render user content only through Angular
   interpolation and property binding, which encode on output. The ESLint rule
-  set (`src/frontend/eslint.config.js`) forbids `[innerHTML]` bindings and calls
+  set (`frontend/eslint.config.js`) forbids `[innerHTML]` bindings and calls
   to `DomSanitizer.bypassSecurityTrust*` through `no-restricted-syntax` rules
   for TypeScript and templates.
 

@@ -29,7 +29,7 @@ This design targets the founder-only shop under [ADR general/0010](../../../adr/
 
 Screens and copy come from `docs/mocks/pages/listing-detail/` (states `default`, `guest`, `own`, `new-seller`, `reserved`, `sold`, `loading`, `error`, `unavailable`). The guest return flow ends on `docs/mocks/pages/sign-in/return.html`.
 
-### Frontend — `Buttonry Web`, feature library `@buttonry/catalog` (`src/frontend/projects/catalog/src/lib/listing-detail/`)
+### Frontend — `Buttonry Web`, feature library `@buttonry/catalog` (`frontend/projects/catalog/src/lib/listing-detail/`)
 
 - **Route** — `items/:reference` in the catalog library's `routes`, no guard, component `ListingDetailPage`. The reference arrives as a component input (router input binding), so the skeleton paints at once.
 - **`ListingDetailPage`** — calls `ListingDetailStore.load(reference)`, sets the document title to "{title} · {brand} · Buttonry" and renders one view:

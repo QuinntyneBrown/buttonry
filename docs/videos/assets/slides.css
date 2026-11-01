@@ -2,9 +2,9 @@
    Heirloom tokens by value (docs/design-system/tokens/tokens.css): Paper #f6f0e4, Cream #fbf7ef, Ink #2b2118,
    Muted #665748, Terracotta #a04228, Forest #2f4a3a, Mustard #d9a441; Fraunces headings, Source Sans 3 body.
    Decks for the founder are picture-first: a few large words per slide, never paragraphs. */
-@font-face { font-family: Fraunces; font-weight: 100 900; src: url(../../../src/frontend/projects/buttonry/public/fonts/fraunces-latin.woff2) format('woff2'); }
-@font-face { font-family: Fraunces; font-style: italic; font-weight: 100 900; src: url(../../../src/frontend/projects/buttonry/public/fonts/fraunces-italic-latin.woff2) format('woff2'); }
-@font-face { font-family: 'Source Sans 3'; font-weight: 200 900; src: url(../../../src/frontend/projects/buttonry/public/fonts/source-sans-3-latin.woff2) format('woff2'); }
+@font-face { font-family: Fraunces; font-weight: 100 900; src: url(../../../frontend/projects/buttonry/public/fonts/fraunces-latin.woff2) format('woff2'); }
+@font-face { font-family: Fraunces; font-style: italic; font-weight: 100 900; src: url(../../../frontend/projects/buttonry/public/fonts/fraunces-italic-latin.woff2) format('woff2'); }
+@font-face { font-family: 'Source Sans 3'; font-weight: 200 900; src: url(../../../frontend/projects/buttonry/public/fonts/source-sans-3-latin.woff2) format('woff2'); }
 
 :root {
   --paper: #f6f0e4; --cream: #fbf7ef; --ink: #2b2118; --muted: #665748;

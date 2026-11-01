@@ -71,7 +71,7 @@ Overall progress and effort are tracked in [docs/estimates](docs/estimates/READM
 ### Prerequisites
 
 - [Git](https://git-scm.com)
-- [.NET SDK 10.0.402 or later](https://dotnet.microsoft.com/download) (pinned in `src/backend/global.json`)
+- [.NET SDK 10.0.402 or later](https://dotnet.microsoft.com/download) (pinned in `backend/global.json`)
 - [Node.js 22 LTS](https://nodejs.org) and npm
 - [SQL Server Express LocalDB](https://learn.microsoft.com/sql/database-engine/configure-windows/sql-server-express-localdb) or another SQL Server instance, to run the API locally
 
@@ -81,7 +81,7 @@ The automated tests don't need a database. They fake every external system.
 
 ```bash
 git clone https://github.com/QuinntyneBrown/buttonry.git
-cd buttonry/src/frontend
+cd buttonry/frontend
 npm ci
 npx playwright install chromium
 npm run verify
@@ -100,19 +100,19 @@ npm run verify
 2. Apply the database migrations.
 
    ```powershell
-   dotnet run --project src/backend/Buttonry.Migrator
+   dotnet run --project backend/src/Buttonry.Migrator
    ```
 
 3. Start the API on `http://localhost:5045`.
 
    ```powershell
-   dotnet run --project src/backend/Buttonry.Api --launch-profile http
+   dotnet run --project backend/src/Buttonry.Api --launch-profile http
    ```
 
 4. In a second terminal, start the Angular app.
 
    ```powershell
-   cd src/frontend
+   cd frontend
    npm start
    ```
 
@@ -124,9 +124,9 @@ To check that the API is up, send `GET http://localhost:5045/api/health`. It ret
 > **Windows on Arm:** LocalDB ships only as x64, so an arm64 process can't load its client and fails with SQL error 193. Build with your usual SDK, then run the built assemblies with the x64 host:
 >
 > ```powershell
-> dotnet build src/backend/Buttonry.sln
-> & "C:\Program Files\dotnet\x64\dotnet.exe" src/backend/Buttonry.Migrator/bin/Debug/net10.0/Buttonry.Migrator.dll
-> & "C:\Program Files\dotnet\x64\dotnet.exe" src/backend/Buttonry.Api/bin/Debug/net10.0/Buttonry.Api.dll --urls http://localhost:5045
+> dotnet build backend/Buttonry.sln
+> & "C:\Program Files\dotnet\x64\dotnet.exe" backend/src/Buttonry.Migrator/bin/Debug/net10.0/Buttonry.Migrator.dll
+> & "C:\Program Files\dotnet\x64\dotnet.exe" backend/src/Buttonry.Api/bin/Debug/net10.0/Buttonry.Api.dll --urls http://localhost:5045
 > ```
 >
 > This requires the x64 .NET 10 runtime under `C:\Program Files\dotnet\x64`.
@@ -136,10 +136,10 @@ To check that the API is up, send `GET http://localhost:5045/api/health`. It ret
 `Buttonry.Cli` resets a local database and fills it with 8 demo members and 48 listings with
 real photos of vintage pieces, 12 in each category, so `/`, the four category pages
 and the listing pages look real. It is for your own machine only; see
-[its README](src/backend/Buttonry.Cli/README.md) for the demo accounts and password.
+[its README](backend/src/Buttonry.Cli/README.md) for the demo accounts and password.
 
 ```bash
-# from src/backend, with SQL Server LocalDB (or any SQL Server you own)
+# from backend/src, with SQL Server LocalDB (or any SQL Server you own)
 export ConnectionStrings__Buttonry="Server=(localdb)\MSSQLLocalDB;Database=Buttonry;Trusted_Connection=True;TrustServerCertificate=True"
 export DOTNET_ENVIRONMENT=Development   # reset refuses to run otherwise, unless --force
 dotnet build Buttonry.Cli
@@ -166,7 +166,7 @@ The API reads standard ASP.NET Core configuration: `appsettings.json`, `appsetti
 
 ## Testing
 
-Run each check from `src/frontend`.
+Run each check from `frontend`.
 
 | Command                  | Runs                                                 |
 | ------------------------ | ---------------------------------------------------- |
@@ -237,14 +237,14 @@ buttonry/
 ├── .github/                 CI and deploy workflows, issue and pull request templates
 ├── deploy/                  Production stack: Docker Compose, Dockerfiles, Caddyfile, cloud-init
 ├── docs/                    Journeys, specs, mocks, Heirloom design system, designs, estimates, ADRs
-├── src/
-│   ├── backend/             .NET solution: Api, Application, Domain, Infrastructure, Worker, Migrator, Cli
-│   └── frontend/            Angular workspace
-│       ├── e2e/             Playwright tests and fixtures
-│       └── projects/        buttonry app (public/media/ photos and the pitch video, public/fonts/ Fraunces and Source Sans 3);
-│                            api, components, accounts, catalog, listings, orders, reviews,
-│                            marketing and privacy libraries
-└── tests/                   xUnit test project per backend project
+├── backend/                 .NET solution (Buttonry.sln, global.json)
+│   ├── src/                 Api, Application, Domain, Infrastructure, Worker, Migrator, Cli
+│   └── tests/               xUnit test project per backend project
+└── frontend/                Angular workspace
+    ├── e2e/                 Playwright tests and fixtures
+    └── projects/            buttonry app (public/media/ photos and the pitch video, public/fonts/ Fraunces and Source Sans 3);
+                             api, components, accounts, catalog, listings, orders, reviews,
+                             marketing and privacy libraries
 ```
 
 ## Documentation
@@ -279,10 +279,10 @@ See [SUPPORT.md](SUPPORT.md) for how to file issues and get help. For anything a
 ## License
 
 Buttonry is licensed under the [MIT License](LICENSE). The demo photos in
-`src/backend/Buttonry.Cli/SeedPhotos/` and the page images and pitch video in
-`src/frontend/projects/buttonry/public/media/` are not: they keep their own licences, with authors
-and sources in [SeedPhotos/ATTRIBUTION.md](src/backend/Buttonry.Cli/SeedPhotos/ATTRIBUTION.md) and
-[media/ATTRIBUTION.md](src/frontend/projects/buttonry/public/media/ATTRIBUTION.md). The video's
+`backend/src/Buttonry.Cli/SeedPhotos/` and the page images and pitch video in
+`frontend/projects/buttonry/public/media/` are not: they keep their own licences, with authors
+and sources in [SeedPhotos/ATTRIBUTION.md](backend/src/Buttonry.Cli/SeedPhotos/ATTRIBUTION.md) and
+[media/ATTRIBUTION.md](frontend/projects/buttonry/public/media/ATTRIBUTION.md). The video's
 narration is synthesised with Kokoro-82M (`onnx-community/Kokoro-82M-v1.0-ONNX`, voice `af_heart`,
 Apache-2.0) and its music is "Warm Nostalgic Sentimental Music" by andriig on Pixabay (Pixabay
 Content Licence); `docs/mocks/_build/video/` holds the build. The Fraunces and

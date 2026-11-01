@@ -36,10 +36,10 @@ By the end, the co-founder can:
 
 | File | What to show |
 | --- | --- |
-| `src/backend/Buttonry.Infrastructure/DependencyInjection.cs` | The three stand-ins |
-| `src/backend/Buttonry.Application/Abstractions/Ports.cs` | `IPaymentProvider` and `IEmailSender` contracts |
-| `src/backend/Buttonry.Api/Controllers/PaymentWebhookController.cs` | `SignatureHeader = "Payment-Signature"` |
-| `src/frontend/projects/api/src/lib/orders/payment-fields.ts` | `PAYMENT_FIELDS`, `TestModePaymentFields` |
+| `backend/src/Buttonry.Infrastructure/DependencyInjection.cs` | The three stand-ins |
+| `backend/src/Buttonry.Application/Abstractions/Ports.cs` | `IPaymentProvider` and `IEmailSender` contracts |
+| `backend/src/Buttonry.Api/Controllers/PaymentWebhookController.cs` | `SignatureHeader = "Payment-Signature"` |
+| `frontend/projects/api/src/lib/orders/payment-fields.ts` | `PAYMENT_FIELDS`, `TestModePaymentFields` |
 | `deploy/.env.example`, `deploy/docker-compose.yml` | `Shop__FounderMemberId`, the `migrator` service |
 | `docs/mocks/pages/checkout/default.html`, `declined.html` | Card fields (ringed) and a declined card |
 | `docs/mocks/pages/my-listings/default.html` | Sell an item, ringed |

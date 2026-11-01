@@ -43,7 +43,7 @@ By the end, the founder can:
 | `docs/mocks/pages/sales/default.html`, `pages/sale-detail/default.html` | A sale; "Ship by" ringed |
 | `docs/mocks/dialogs/add-tracking/default.html` | Add tracking dialog |
 | `docs/mocks/pages/support/default.html` | Support queue |
-| `src/backend/Buttonry.Cli/SeedPhotos/**`, `public/media/buttonry-hero.jpg`, `buttonry-founder.jpg` | Treasure, hero and founder photos |
+| `backend/src/Buttonry.Cli/SeedPhotos/**`, `public/media/buttonry-hero.jpg`, `buttonry-founder.jpg` | Treasure, hero and founder photos |
 
 `pictures/` holds the ringed screenshots; `build_video.py --pictures` regenerates them from the mocks.
 
@@ -65,12 +65,12 @@ By the end, the founder can:
 
 ## For the technical partner: what step 3 means in this repository
 
-1. **Payments.** Replace `UnconfiguredPaymentProvider` (`src/backend/Buttonry.Infrastructure/Payments/`) with a Stripe
+1. **Payments.** Replace `UnconfiguredPaymentProvider` (`backend/src/Buttonry.Infrastructure/Payments/`) with a Stripe
    adapter of `IPaymentProvider`, add a Stripe `PAYMENT_FIELDS` factory in `@buttonry/api`, add Stripe's origins to the
    Content Security Policy and set `PaymentProvider:ApiKey`, `PaymentProvider:WebhookSecret` and
    `PaymentProvider:PublishableKey` in `/opt/buttonry/.env` ([ADR orders/0001](../../adr/orders/0001-payment-provider-behind-a-port-until-chosen.md)).
    Sales tax comes from `QuoteTaxAsync`; decide with the founder's accountant whether to use Stripe Tax.
-2. **Email.** Replace `LoggingEmailSender` (`src/backend/Buttonry.Infrastructure/Email/`) with a real sender, or customers
+2. **Email.** Replace `LoggingEmailSender` (`backend/src/Buttonry.Infrastructure/Email/`) with a real sender, or customers
    cannot verify their email and so cannot check out (`L2-027`).
 3. **Founder.** After she joins and verifies, follow [Provision the founder](../../deployment.md#provision-the-founder).
 4. **Test sale.** Buy a low-priced treasure with a real card, then refund it from the founder's problem flow or Stripe.
