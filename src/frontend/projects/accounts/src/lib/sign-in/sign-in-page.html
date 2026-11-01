@@ -1,0 +1,95 @@
+@if (expired() === '1' && !dismissedExpired()) {
+  <div>
+    <h1>Welcome back</h1>
+    <p class="text-muted sign-in__lead">For your security, sign in again after 14 days away.</p>
+  </div>
+  <div class="stack">
+    <button btButton="primary" size="lg" [block]="true" type="button" (click)="dismissedExpired.set(true)">
+      Sign in
+    </button>
+  </div>
+} @else {
+  @if (toBuy()) {
+    <div>
+      <h1>Sign in to buy</h1>
+      <p class="text-muted sign-in__lead">You’ll go straight back to the item.</p>
+    </div>
+  } @else {
+    <div><h1>Sign in</h1></div>
+  }
+  @switch (googleResult()) {
+    @case ('cancelled') {
+      <bt-alert tone="info" heading="Google sign-in was cancelled" live="polite"
+        >Nothing was changed. Try again, or sign in with your email and password.</bt-alert
+      >
+    }
+    @case ('existing') {
+      <bt-alert tone="warning" heading="An account with this email already exists" icon="lock"
+        >Sign in with your password and verify your email first. After that, Google will sign you in to the same
+        account.</bt-alert
+      >
+    }
+    @case ('failed') {
+      <bt-alert tone="danger" heading="Couldn’t sign in with Google"
+        >Try again in a moment, or sign in with your email and password.
+        <span class="ref">{{ googleRef() }}</span></bt-alert
+      >
+    }
+  }
+  @if (failure(); as failure) {
+    @if (failure.kind === 'incorrect') {
+      <bt-alert tone="danger" heading="Email or password is incorrect">Check both and try again.</bt-alert>
+    } @else if (failure.kind === 'locked') {
+      <bt-alert tone="warning" heading="Too many attempts" icon="clock"
+        >Try again in 15 minutes. We’ve emailed you about this.</bt-alert
+      >
+    } @else {
+      <bt-alert tone="danger" heading="Something went wrong"
+        >Try again in a moment. <span class="ref">{{ failure.ref }}</span></bt-alert
+      >
+    }
+  }
+  @if (googleOffered()) {
+    <div class="stack">
+      <bt-provider-button
+        provider="google"
+        [href]="googleStartUrl()"
+        [busy]="leavingForGoogle()"
+        (pressed)="leavingForGoogle.set(true)"
+        >Continue with Google</bt-provider-button
+      >
+      <bt-or-divider />
+    </div>
+  }
+  <form class="stack stack--lg" novalidate [formGroup]="form" (ngSubmit)="submit()">
+    <bt-form-field fieldId="email" label="Email">
+      <input
+        class="input"
+        id="email"
+        type="email"
+        autocomplete="email"
+        formControlName="email"
+        [readonly]="busy() || leavingForGoogle()"
+      />
+    </bt-form-field>
+    <div class="stack stack--sm">
+      <bt-form-field fieldId="password" label="Password">
+        <input
+          class="input"
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          formControlName="password"
+          [readonly]="busy() || leavingForGoogle()"
+        />
+      </bt-form-field>
+      <a class="text-sm sign-in__forgot" routerLink="/forgot-password">Forgot password?</a>
+    </div>
+    <div class="stack">
+      <button btButton="primary" size="lg" [block]="true" type="submit" [busy]="busy()" [disabled]="leavingForGoogle()">
+        Sign in
+      </button>
+    </div>
+  </form>
+  <p class="text-sm text-muted">New to Buttonry? <a routerLink="/join">Join</a></p>
+}

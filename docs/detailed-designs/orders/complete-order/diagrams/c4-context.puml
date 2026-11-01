@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title Context - Complete an order
+Person(user, "Customer or completion worker", "Uses this shop capability")
+System(shop, "Buttonry", "Founder-owned antiques and vintage shop")
+Rel(user, shop, "Complete an order", "HTTPS")
+System_Ext(provider, "Payment provider", "External port; production adapter remains separately configured")
+Rel(shop, provider, "Uses signed, authenticated integration")
+@enduml

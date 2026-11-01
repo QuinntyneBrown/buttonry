@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Deploy on push to main (L2-084, L2-085, L2-087)
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+actor "Owner" as owner
+box "Backend - GitHub Actions deployment" #FFF4E5
+  participant "CI (verify)" as ci
+  participant "Deploy marketing" as dm
+  participant "Deploy app" as da
+end box
+participant "GHCR" as ghcr
+box "Backend - Azure VM /opt/buttonry" #D1FADF
+  participant "docker compose" as compose
+  participant "migrator" as mig
+  participant "edge + marketing" as mkt
+  participant "edge + api + worker + app" as stack
+end box
+database "Azure SQL" as sql
+owner -> ci : push to main
+alt verify fails or run is a pull request
+  ci --> owner : red run; both deploy build jobs skipped
+else verify passes
+  ci -> dm : workflow_run completed, success, head_sha
+  ci -> da : workflow_run completed, success, head_sha (same moment; separate concurrency groups)
+  par Deploy marketing (group deploy-marketing)
+    dm -> ghcr : push buttonry-marketing:{sha} and :latest
+    dm -> compose : scp docker-compose.yml + edge/Caddyfile; docker login (token on stdin)
+    dm -> compose : bash -s (set -euo pipefail): MARKETING_TAG={sha}, SITE_ADDRESS, pull marketing edge
+    compose -> ghcr : pull marketing:{sha}
+    compose -> mkt : up -d --no-deps marketing edge; prune images older than 72h
+    loop up to 20 times, 6 s apart
+      dm -> mkt : GET https://SITE_HOST/welcome/ contains "Buttonry"?
+    end
+    alt 200 with "Buttonry"
+      dm --> owner : green run; marketing live (no-cache index.html)
+    else no 200 within 2 minutes
+      dm --> owner : "marketing check failed"; run fails; app untouched
+    end
+  else Deploy app (group deploy-app)
+    da -> ghcr : push buttonry-{api,worker,migrator,app}:{sha} and :latest
+    da -> compose : scp docker-compose.yml + edge/Caddyfile; docker login (token on stdin)
+    da -> compose : bash -s (set -euo pipefail): APP_TAG={sha}, SITE_ADDRESS, pull api worker migrator app edge
+    compose -> ghcr : pull {sha}
+    compose -> mig : run --rm -T migrator < /dev/null
+    mig -> sql : apply migrations
+    alt migration fails
+      mig --> da : non-zero exit; up -d never runs
+      da --> owner : run fails; old containers keep serving; marketing untouched
+    else migrations applied
+      compose -> stack : up -d --no-deps api worker app edge; prune images older than 72h
+      loop up to 20 times, 6 s apart
+        da -> stack : GET https://SITE_HOST/api/health
+        da -> stack : then GET https://SITE_HOST/
+      end
+      alt 200
+        da --> owner : green run; application live (no-cache index.html)
+      else no 200 within 2 minutes
+        da --> owner : "health check failed" or "app check failed"; run fails
+      end
+    end
+  end
+end
+@enduml

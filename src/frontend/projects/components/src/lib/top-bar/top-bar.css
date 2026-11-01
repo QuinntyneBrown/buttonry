@@ -1,0 +1,15 @@
+:host {
+  display: contents;
+}
+.topbar__avatar {
+  text-decoration: none;
+}
+/* Under 62rem the search button reveals the search well under the bar. */
+@media (max-width: 61.99rem) {
+  .topbar .search.search--open {
+    display: flex;
+    position: absolute;
+    inset: calc(100% + var(--space-3)) var(--layout-margin) auto;
+    max-width: none;
+  }
+}

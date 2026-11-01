@@ -1,0 +1,32 @@
+# The Azure DNS name serves the application at / and the marketing site at /welcome/ (ADR platform/0016).
+{$SITE_ADDRESS:localhost} {
+	encode zstd gzip
+	redir /welcome /welcome/ permanent
+	# Strip the public prefix before the marketing file server resolves its assets.
+	handle_path /welcome/* {
+		reverse_proxy marketing:80
+	}
+	handle {
+		reverse_proxy app:80
+	}
+}
+
+# The registered domain shows the marketing site at / on both hosts (ADR platform/0017). Namecheap points the apex
+# A record at the VM's static IP and www at the apex; Caddy issues both certificates. The marketing image serves the
+# same build with base href / on port 8080.
+buttonry.com, www.buttonry.com {
+	encode zstd gzip
+	# The page asks the API who is signed in; answer exactly as on the Azure host.
+	handle /api/* {
+		reverse_proxy app:80
+	}
+	handle {
+		reverse_proxy marketing:8080
+	}
+}
+
+# The application on its own host (ADR platform/0017); the app image proxies /api and /photos to the API.
+app.buttonry.com {
+	encode zstd gzip
+	reverse_proxy app:80
+}

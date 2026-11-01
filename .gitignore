@@ -1,0 +1,22 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.cache/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.angular/
+bin/
+obj/
+.vs/
+*.user
+*.suo
+__pycache__/
+.deploy-secrets/
+
+# Guide video narration (built by docs/videos/_build/build_video.py)
+docs/videos/*/*.mp3

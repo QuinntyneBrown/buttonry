@@ -1,0 +1,50 @@
+import { Locator, Page } from '@playwright/test';
+
+/** The marketing page at /welcome. */
+export class WelcomePage {
+  readonly main: Locator;
+  readonly heading: Locator;
+  /** The hero's video poster: one button named after its label. */
+  readonly poster: Locator;
+  /** The pitch video dialog and its parts. */
+  readonly dialog: Locator;
+  readonly video: Locator;
+  readonly playPause: Locator;
+  readonly captions: Locator;
+  readonly videoError: Locator;
+
+  constructor(private readonly page: Page) {
+    this.main = page.locator('main#main');
+    this.heading = this.main.getByRole('heading', { level: 1 });
+    this.poster = this.main.getByRole('button', { name: 'Play' });
+    this.dialog = page.getByRole('dialog', { name: 'Buttonry video' });
+    this.video = this.dialog.locator('video');
+    this.playPause = this.dialog.getByRole('button', { name: /^(Play|Pause)$/ });
+    this.captions = this.dialog.getByRole('button', { name: 'Captions' });
+    this.videoError = this.dialog.getByRole('alert');
+  }
+
+  async goto(): Promise<void> {
+    await this.page.goto('/welcome');
+  }
+
+  /** Every link named "Start selling" on the page. */
+  sellLinks(): Locator {
+    return this.main.getByRole('link', { name: 'Start selling' });
+  }
+
+  link(name: string): Locator {
+    return this.main.getByRole('link', { name }).first();
+  }
+
+  async headingLevels(): Promise<number[]> {
+    return this.main
+      .locator('h1, h2, h3, h4')
+      .evaluateAll((headings) => headings.map((heading) => Number(heading.tagName.slice(1))));
+  }
+
+  /** Whether the dialog's video is paused. */
+  isPaused(): Promise<boolean> {
+    return this.video.evaluate((video: HTMLVideoElement) => video.paused);
+  }
+}

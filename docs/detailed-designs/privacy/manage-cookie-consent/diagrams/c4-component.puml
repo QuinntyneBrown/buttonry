@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Manage cookie consent
+
+Person(visitor, "Visitor", "Browser user")
+Container_Boundary(web, "Buttonry Web") {
+  Component(banner, "CookieConsentComponent + bt-consent-banner", "@buttonry/privacy, @buttonry/components", "First-visit banner")
+  Component(dialog, "CookieSettingsDialog", "@buttonry/privacy dialog", "Analytics switch, Cancel / Save")
+  Component(entry, "Entry points", "bt-footer Cookie settings button, banner", "Open the dialog")
+  Component(consent, "CookieConsentService", "@buttonry/privacy service, signals", "Consent state and sy_consent cookie")
+  Component(analyticsSvc, "AnalyticsService", "@buttonry/privacy service", "Starts, stops and tracks; deletes analytics cookies")
+  Component(toast, "ToastService", "@buttonry/components", "Cookie choice saved")
+  Component(apis, "Typed API services", "@buttonry/api", "Catalog, session and other API calls")
+}
+Container_Boundary(api, "Buttonry API") {
+  Component(mw, "CookieAllowListMiddleware", "ASP.NET Core middleware", "Drops non-allow-listed Set-Cookie headers")
+}
+System_Ext(analytics, "Analytics provider", "Script and collection endpoint")
+
+Rel(visitor, banner, "Chooses")
+Rel(visitor, entry, "Opens Cookie settings")
+Rel(entry, dialog, "Opens")
+Rel(banner, consent, "acceptAnalytics() / necessaryOnly()")
+Rel(banner, toast, "Shows saved toast")
+Rel(dialog, consent, "save(analytics)")
+Rel(analyticsSvc, consent, "Reads consent signal")
+Rel(analyticsSvc, analytics, "Script and events only when consent = analytics", "HTTPS")
+Rel(apis, mw, "Responses pass through", "JSON/HTTPS")
+@enduml

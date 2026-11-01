@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+title Behaviour - Reserve a founder treasure
+autonumber
+actor "Verified customer" as actor
+box "Frontend - Buttonry Web" #E0F2FE
+ participant "CheckoutPage" as page
+ participant "CheckoutApi" as client
+end box
+box "Backend - Buttonry API" #D1FADF
+ participant "CheckoutsController" as entry
+end box
+box "Backend - Buttonry Application and Domain" #ECFDF3
+ participant "CheckoutCommandHandlers" as handler
+ participant "Checkout" as model
+end box
+box "Backend - Buttonry Infrastructure" #FFF4E5
+ database "Feature state / unit of work" as db
+end box
+participant "Payment provider" as provider
+actor -> page : Reserve a founder treasure
+page -> client : POST /api/checkouts
+client -> entry : Typed HTTPS request
+entry -> handler : Authenticate session or signed callback
+handler -> db : Load authorized current state
+db --> handler : Current state
+alt Access, validation or state check refuses the action
+ handler -> handler : Preserve state and return domain refusal
+else Authorized and valid action
+handler -> handler : Require verified customer and reject founder self-purchase [L2-026]
+handler -> model : Acquire exclusive ten-minute reservation [L2-028, L2-029]
+handler -> handler : Return buyer-owned checkout and server totals
+handler -> db : Commit valid state and outbox atomically
+db --> handler : Result
+end
+handler --> entry : Result or domain refusal
+entry --> client : Typed result or ProblemDetails
+client --> page : Update feature state
+page --> actor : 201 checkout; 409 competing reservation; 422 founder purchase
+note over entry, handler
+201 checkout; 409 competing reservation; 422 founder purchase
+end note
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components - Ship founder orders
+Container_Boundary(slice, "Buttonry API and Application") {
+  Component(entry, "OrdersController", "Controller", "Feature entry point")
+  Component(handler, "AddTrackingCommandHandler", "Application handler", "Executes feature rules")
+  Component(entity, "Order", "Domain or read model", "Feature state and invariants")
+  ComponentDb(db, "Buttonry database", "SQL Server", "Persistent feature state")
+}
+Rel(entry, handler, "Dispatches validated action")
+Rel(handler, entity, "Reads or applies rules")
+Rel(handler, db, "Queries or saves atomically", "EF Core")
+Component(access, "IFounderAccess", "Application port", "Configured immutable founder identity")
+Rel(entry, access, "Checks protected management actions")
+Rel(handler, access, "Enforces non-HTTP boundary")
+@enduml

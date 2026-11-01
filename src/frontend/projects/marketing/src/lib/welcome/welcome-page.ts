@@ -1,0 +1,81 @@
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthState } from '@buttonry/api';
+import {
+  APP_ORIGIN,
+  ButtonDirective,
+  externalHref,
+  DialogService,
+  FeatureBandComponent,
+  FeaturePoint,
+  MarketingHeroComponent,
+  QuoteComponent,
+  Step,
+  StepsComponent,
+  VideoPosterComponent,
+} from '@buttonry/components';
+
+import { PitchVideoDialog } from './pitch-video-dialog';
+
+/**
+ * Public marketing page at /welcome (L2-078 to L2-083, L2-089 to L2-091). The hero shows the pitch
+ * video's poster only; pressing it opens the video in a dialog, so nothing loads or plays until the
+ * visitor asks. The meta description and link-preview tags are static in index.html
+ * (index.marketing.html for the marketing build) because crawlers do not run scripts. Static copy,
+ * no Buttonry API call of its own; Start selling goes to /join for a visitor and /sell for a
+ * member. Copy follows ADR general/0005: every listing is vintage, at least 20 years old, in a warm
+ * and respectful voice.
+ */
+@Component({
+  selector: 'bt-welcome-page',
+  imports: [
+    RouterLink,
+    ButtonDirective,
+    MarketingHeroComponent,
+    VideoPosterComponent,
+    FeatureBandComponent,
+    StepsComponent,
+    QuoteComponent,
+  ],
+  templateUrl: './welcome-page.html',
+  styleUrl: './welcome-page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class WelcomePage {
+  private readonly auth = inject(AuthState);
+  /** Empty in the application; the app host in the marketing build, so the calls to action leave the site. */
+  readonly origin = inject(APP_ORIGIN);
+  private readonly dialogs = inject(DialogService);
+
+  readonly sellPath = computed(() => (this.auth.member() ? '/sell' : '/join'));
+  /** Router link inside the application (null in the marketing build). */
+  readonly sellHref = computed(() => (this.origin ? null : this.sellPath()));
+  /** Absolute app URL in the marketing build (null in the application). */
+  readonly sellExternal = computed(() => externalHref(this.origin, this.sellPath()));
+  readonly catalogHref = this.origin ? null : '/';
+  readonly catalogExternal = externalHref(this.origin, '/');
+
+  readonly shopperPoints: FeaturePoint[] = [
+    { title: 'Four focused categories', text: 'Jewelry, clothing, housewares and electronics. No clutter.' },
+    { title: 'Listed by a real person', text: 'Every listing is a little piece of somebody’s story.' },
+    { title: 'Honest condition', text: 'Five grades, and flaws named up front.' },
+  ];
+  readonly sellerPoints: FeaturePoint[] = [
+    {
+      title: 'Big buttons, clear steps',
+      text: 'Selling a lifetime of belongings should feel respectful — not rushed.',
+    },
+    { title: 'A real person to call', text: 'If you get stuck, call 1-800-555-0123.' },
+  ];
+  readonly steps: Step[] = [
+    { title: 'Find a treasure', text: 'Browse jewelry, clothing, housewares and electronics.' },
+    { title: 'Pay securely', text: 'Check out with a card; the piece is yours once you pay.' },
+    { title: 'Receive its story', text: 'It arrives packed with care, with a note about where it came from.' },
+  ];
+  openVideo(): void {
+    this.dialogs.open(PitchVideoDialog);
+  }
+
+  readonly founderQuote =
+    'It’s the made-up word I whispered to my son when he was a baby. When it came time to clear out our family home, I realized every teacup and brooch deserved that same word — and someone who’d see it too.';
+}

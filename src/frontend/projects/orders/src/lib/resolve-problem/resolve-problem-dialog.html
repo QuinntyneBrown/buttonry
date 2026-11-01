@@ -1,0 +1,56 @@
+<bt-dialog [heading]="'Resolve problem ' + data.detail.problem.reference">
+  @if (state() === 'failed') {
+    <bt-alert top tone="danger" heading="That didn’t go through">{{ failure() }}</bt-alert>
+  }
+  <bt-radio-group legend="Decision">
+    <bt-choice inputId="outcome-refund">
+      <input
+        type="radio"
+        name="outcome"
+        id="outcome-refund"
+        data-autofocus
+        [checked]="outcome() === 'RefundBuyer'"
+        [disabled]="state() === 'busy'"
+        (change)="outcome.set('RefundBuyer')"
+      /><span class="choice__text"
+        >Refund in full<small>{{ total }} back to {{ data.detail.buyerDisplayName }}</small></span
+      ></bt-choice
+    >
+    <bt-choice inputId="outcome-release">
+      <input
+        type="radio"
+        name="outcome"
+        id="outcome-release"
+        [checked]="outcome() === 'CloseWithoutRefund'"
+        [disabled]="state() === 'busy'"
+        (change)="outcome.set('CloseWithoutRefund')"
+      /><span class="choice__text"
+        >Close without refund (order completes)<small>No refund; the order becomes Completed</small></span
+      ></bt-choice
+    >
+  </bt-radio-group>
+  <bt-form-field
+    #rf
+    fieldId="resolve-reason"
+    label="Your explanation"
+    help="Shown to the customer."
+    [error]="reasonError()"
+  >
+    <textarea
+      class="textarea"
+      id="resolve-reason"
+      rows="3"
+      [readOnly]="state() === 'busy'"
+      [value]="reason()"
+      [attr.aria-describedby]="rf.describedBy()"
+      [attr.aria-invalid]="rf.invalid()"
+      (input)="reason.set($any($event.target).value)"
+    ></textarea>
+  </bt-form-field>
+  <ng-container ngProjectAs="[footer]">
+    <button btButton type="button" [disabled]="state() === 'busy'" (click)="ref.close()">Cancel</button>
+    <button btButton="primary" type="submit" [busy]="state() === 'busy'" (click)="submit()">
+      {{ state() === 'busy' ? busyLabel() : state() === 'failed' ? 'Try again' : action() }}
+    </button>
+  </ng-container>
+</bt-dialog>

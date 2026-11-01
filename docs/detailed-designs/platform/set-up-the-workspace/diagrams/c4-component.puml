@@ -1,0 +1,39 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Set up the workspace
+
+Container_Boundary(web, "Buttonry Web (src/frontend)") {
+  Component(app, "projects/buttonry", "Application", "AppComponent, AppShellComponent, HomePlaceholderPage, app.routes.ts")
+  Component(feat, "projects/accounts … privacy", "Six feature libraries", "Empty lazy route tables")
+  Component(apilib, "projects/api", "Library @buttonry/api", "provideApi(), API_BASE_URL")
+  Component(comps, "projects/components", "Library @buttonry/components", "tokens.css, components.css, bt-skip-link, bt-logo, bt-top-bar, bt-footer, bt-toast-region")
+  Component(e2e, "e2e/", "Playwright", "shell.page.ts, shell.spec.ts")
+}
+Container_Boundary(be, "Buttonry API (src/backend)") {
+  Component(apiproj, "Buttonry.Api", "ASP.NET Core", "HealthController: GET /api/health")
+  Component(appproj, "Buttonry.Application", "Class library", "Marker only")
+  Component(dom, "Buttonry.Domain", "Class library", "Marker only")
+  Component(infra, "Buttonry.Infrastructure", "Class library", "Marker only")
+  Component(worker, "Buttonry.Worker", "Worker service", "Empty hosted service")
+  Component(mig, "Buttonry.Migrator", "Console", "No migrations yet")
+}
+Container_Boundary(t, "tests/") {
+  Component(apitests, "Buttonry.Api.Tests", "xUnit", "HealthEndpointTests, StatelessApiTests (L2-060)")
+  Component(other, "Buttonry.*.Tests", "xUnit", "One smoke test each")
+}
+Rel(app, feat, "loadChildren")
+Rel(app, comps, "Shell components")
+Rel(app, apilib, "provideApi()")
+Rel(feat, apilib, "Imports")
+Rel(feat, comps, "Imports")
+Rel(e2e, app, "Loads /")
+Rel(apiproj, appproj, "References")
+Rel(apiproj, infra, "References")
+Rel(appproj, dom, "References")
+Rel(infra, appproj, "References")
+Rel(worker, infra, "References")
+Rel(mig, infra, "References")
+Rel(apitests, apiproj, "WebApplicationFactory, NetArchTest")
+Rel(other, dom, "References each project")
+@enduml

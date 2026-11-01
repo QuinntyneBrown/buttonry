@@ -1,0 +1,69 @@
+@switch (view()) {
+  @case ('form') {
+    <div class="sell">
+      <div class="page-header"><h1>Sell an item</h1></div>
+      <form class="sell-form" novalidate [formGroup]="model.form" (ngSubmit)="publish()">
+        <bt-error-summary [errors]="model.summary()" />
+        @if (draftSaved()) {
+          <bt-alert tone="success" heading="Draft saved" live="polite"
+            >Finish it any time from <a routerLink="/account/listings">your listings</a>.</bt-alert
+          >
+        }
+        @if (failure(); as failure) {
+          <bt-alert tone="danger" [heading]="failure.heading"
+            >{{ failure.text }}
+            @if (failure.ref) {
+              <span class="ref">{{ failure.ref }}</span>
+            }
+          </bt-alert>
+        }
+
+        <bt-listing-form [model]="model" />
+
+        <div class="form-actions form-actions--sticky form-actions--split">
+          <button
+            btButton
+            type="button"
+            [disabled]="busy() === 'publish'"
+            [busy]="busy() === 'draft'"
+            (click)="saveDraft()"
+          >
+            Save draft
+          </button>
+          <button btButton="primary" type="submit" [busy]="busy() === 'publish'">Publish</button>
+        </div>
+      </form>
+    </div>
+  }
+  @case ('success') {
+    @if (published(); as item) {
+      <bt-center-state icon="check" heading="It’s live">
+        <div class="panel sell__panel"><bt-item-row [title]="item.title" [meta]="item.meta" /></div>
+        <a actions btButton="primary" [routerLink]="['/items', item.reference]">View listing</a>
+        <a actions btButton routerLink="/sell" (click)="reset()">Sell another</a>
+      </bt-center-state>
+    }
+  }
+  @case ('unverified') {
+    <bt-center-state icon="mail" heading="Verify your email to sell">
+      <p class="text-muted">We sent a link to {{ email() }}.</p>
+      <button actions btButton="primary" type="button" (click)="openVerifyPrompt()">Resend link</button>
+      <a actions btButton routerLink="/">Back to shop</a>
+    </bt-center-state>
+  }
+  @case ('limited') {
+    <bt-center-state icon="clock" heading="That’s 20 listings today">
+      <p class="text-muted">You can list more tomorrow. Drafts still save.</p>
+      <a actions btButton="primary" routerLink="/account/listings">Your listings</a>
+    </bt-center-state>
+  }
+  @case ('error') {
+    <bt-center-state icon="refresh" heading="Couldn’t open the form">
+      <p class="text-muted">
+        Something went wrong on our side. <span class="ref">{{ loadRef() }}</span>
+      </p>
+      <button actions btButton="primary" type="button" (click)="open()"><bt-icon name="refresh" />Try again</button>
+      <a actions btButton routerLink="/">Back to shop</a>
+    </bt-center-state>
+  }
+}

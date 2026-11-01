@@ -1,0 +1,94 @@
+@switch (store.view()) {
+  @case ('loading') {
+    <h1 class="visually-hidden">Loading profile</h1>
+    <section class="profile-head" aria-busy="true" aria-label="Loading profile">
+      <span class="skeleton avatar avatar--xl"></span>
+      <div class="profile-head__body">
+        <span class="skeleton skeleton--title member-profile__skeleton-name"></span>
+        <span class="skeleton skeleton--text skeleton--w35"></span>
+        <span class="skeleton skeleton--text skeleton--w30"></span>
+      </div>
+    </section>
+    <bt-listing-grid [cards]="[]" [loading]="true" />
+  }
+  @case ('unavailable') {
+    <bt-center-state code="404" heading="This page isn’t available">
+      <a actions btButton="primary" routerLink="/">Back to shop</a>
+    </bt-center-state>
+  }
+  @case ('error') {
+    <bt-center-state heading="Couldn’t load this profile">
+      <p class="text-muted">
+        It’s us, not you. <span class="ref">{{ store.errorRef() }}</span>
+      </p>
+      <button actions btButton="primary" type="button" (click)="store.retry()">
+        <bt-icon name="refresh" />Try again
+      </button>
+      <a actions btButton routerLink="/">Back to shop</a>
+    </bt-center-state>
+  }
+  @default {
+    @if (store.profile(); as profile) {
+      <section class="profile-head">
+        @if (profile.avatarUrl) {
+          <span class="avatar avatar--xl"><img [src]="profile.avatarUrl" alt="" /></span>
+        } @else {
+          <span class="avatar avatar--xl" aria-hidden="true">{{ initials() }}</span>
+        }
+        <div class="profile-head__body">
+          <h1>{{ profile.displayName }}</h1>
+          @if (profile.publicLocation) {
+            <span class="text-muted member-profile__location"
+              ><bt-icon name="map-pin" size="sm" />{{ profile.publicLocation }}</span
+            >
+          }
+          <bt-rating-summary [rating]="profile.rating" />
+          @if (auth.isFounder() && auth.member()?.displayName === profile.displayName) {
+            <a btButton routerLink="/shop/story"><bt-icon name="edit" />Edit story</a>
+          }
+          @if (profile.bio) {
+            <p class="text-muted member-profile__bio">{{ profile.bio }}</p>
+          }
+        </div>
+      </section>
+      <div class="stats stats--compact">
+        <bt-stat label="Sales" [value]="profile.completedSales.toLocaleString('en-US')" />
+        <bt-stat label="Member since" [value]="since()" />
+      </div>
+      <section class="section member-profile__section" aria-labelledby="for-sale-heading">
+        <div class="section-head">
+          <h2 id="for-sale-heading">For sale</h2>
+          <span class="text-muted text-sm">{{ store.totalListings() }}</span>
+        </div>
+        @if (store.totalListings() === 0) {
+          <bt-empty-state icon="tag" heading="No items for sale" [compact]="true">
+            {{ profile.displayName }} hasn’t listed anything yet.
+          </bt-empty-state>
+        } @else {
+          <bt-listing-grid [cards]="cards()" />
+          @if (store.moreErrorRef(); as ref) {
+            <bt-alert tone="danger" heading="Couldn’t load more items"
+              >Something went wrong on our side. <span class="ref">{{ ref }}</span>
+              <button btButton="link" type="button" (click)="store.loadMore()">Try again</button></bt-alert
+            >
+          }
+          <bt-load-more
+            [shown]="store.listings().length"
+            [total]="store.totalListings()"
+            [busy]="store.loadingMore()"
+            (loadMore)="store.loadMore()"
+          />
+        }
+      </section>
+      <section class="section member-profile__section member-profile__reviews" aria-labelledby="reviews-heading">
+        <div class="section-head">
+          <h2 id="reviews-heading">Reviews</h2>
+          <span class="text-muted text-sm">{{ profile.rating.count }}</span>
+        </div>
+        @if (profile.rating.count === 0) {
+          <p class="text-muted">No reviews yet</p>
+        }
+      </section>
+    }
+  }
+}

@@ -1,0 +1,141 @@
+@switch (view()) {
+  @case ('loading') {
+    <h1 class="visually-hidden">Loading sale</h1>
+    <div class="split order__loading" aria-busy="true">
+      <div class="stack stack--lg">
+        <span class="skeleton skeleton--title"></span>
+        <span class="skeleton skeleton--rect order__skeleton-block"></span>
+        <span class="skeleton skeleton--rect order__skeleton-block"></span>
+      </div>
+      <div class="panel stack">
+        <span class="skeleton skeleton--text"></span>
+        <span class="skeleton skeleton--text"></span>
+        <span class="skeleton skeleton--text"></span>
+      </div>
+    </div>
+  }
+  @case ('error') {
+    <bt-center-state heading="Couldn’t load this sale">
+      <p class="text-muted">Something went wrong on our side. Try again in a moment.</p>
+      <span class="ref">{{ errorRef() }}</span>
+      <button actions btButton="primary" type="button" (click)="retry()"><bt-icon name="refresh" />Try again</button>
+      <a actions btButton routerLink="/shop/sales">Back to sales</a>
+    </bt-center-state>
+  }
+  @default {
+    @if (sale(); as sale) {
+      <nav aria-label="Breadcrumb" class="order__crumbs">
+        <ol class="breadcrumb">
+          <li><a routerLink="/shop/sales">Sales</a></li>
+          <li aria-current="page">{{ sale.reference }}</li>
+        </ol>
+      </nav>
+      <div class="split order__body">
+        <div class="stack stack--lg">
+          <div class="stack stack--sm">
+            <p class="eyebrow">Order {{ sale.reference }} · {{ day(sale.paidAt) }}</p>
+            <h1>{{ heading() }}</h1>
+          </div>
+          @if (ended()) {
+            <bt-alert tone="info" [heading]="sale.status + ' · Buyer refunded in full'">{{ endedNote() }}</bt-alert>
+            @if (sale.canRelist) {
+              <div class="cluster">
+                <button btButton="primary" type="button" (click)="relist()">Relist item</button>
+              </div>
+            }
+          } @else if (problemOpen() && sale.problem; as problem) {
+            <bt-alert tone="warning" icon="flag" [heading]="'Problem reported · ' + problem.reasonLabel"
+              >Completion is paused until you resolve it.</bt-alert
+            >
+            <bt-thread [entries]="thread()" />
+            @if (!problem.sellerResponse) {
+              @if (replyState() === 'failed') {
+                <bt-alert tone="danger" heading="That didn’t go through"
+                  >Your reply is kept here. Check your connection and try again.</bt-alert
+                >
+              }
+              <bt-form-field
+                #rf
+                fieldId="problem-reply"
+                label="Your reply"
+                help="Visible to the buyer and to Buttonry."
+                [error]="replyError()"
+              >
+                <textarea
+                  class="textarea"
+                  id="problem-reply"
+                  rows="3"
+                  [value]="reply()"
+                  [attr.aria-describedby]="rf.describedBy()"
+                  [attr.aria-invalid]="rf.invalid()"
+                  (input)="reply.set($any($event.target).value)"
+                ></textarea>
+              </bt-form-field>
+              <div class="cluster">
+                <button btButton="primary" type="button" [busy]="replyState() === 'busy'" (click)="sendReply()">
+                  {{ replyState() === 'failed' ? 'Try again' : 'Send reply' }}
+                </button>
+              </div>
+            }
+          } @else {
+            @if (requested() && sale.cancellationRequest; as request) {
+              @if (request.message) {
+                <bt-quote size="sm" [text]="request.message" [cite]="sale.buyerDisplayName" />
+              }
+              <div class="cluster">
+                <button btButton="primary" type="button" (click)="respond()">Respond</button>
+              </div>
+            } @else if (sale.status === 'Paid') {
+              <p class="lead">
+                Ship by <strong>{{ day(sale.shipBy) }}</strong
+                >.
+              </p>
+            } @else {
+              <bt-order-timeline [steps]="steps()" />
+              @if (sale.tracking; as tracking) {
+                <bt-tracking-link [carrier]="tracking.carrier" [number]="tracking.number" [url]="tracking.url" />
+              }
+            }
+            <div class="stack stack--sm">
+              <h2 class="panel__title">Ship to</h2>
+              @if (sale.shipTo; as shipTo) {
+                <address class="address">
+                  {{ shipTo.fullName }}<br />{{ shipTo.line1 }}{{ shipTo.line2 ? ', ' + shipTo.line2 : '' }}<br />{{
+                    shipTo.city
+                  }},
+                  {{ shipTo.state }}
+                  {{ shipTo.zip }}
+                </address>
+                <p class="text-caption">Visible until 30 days after the order ends.</p>
+              } @else {
+                <p class="text-muted text-sm">
+                  <bt-icon name="eye-off" size="sm" /> Removed 30 days after the order ended.
+                </p>
+              }
+            </div>
+            @if (sale.status === 'Paid' && !requested()) {
+              <div class="cluster">
+                <button btButton="primary" type="button" (click)="addTracking()">
+                  <bt-icon name="truck" />Add tracking
+                </button>
+                <button btButton="ghost" type="button" (click)="cancelOrder()">Cancel order</button>
+              </div>
+            }
+          }
+        </div>
+        @if (summaryItem(); as item) {
+          <bt-order-summary
+            heading=""
+            [item]="item"
+            [itemPrice]="money(sale.itemPrice)"
+            [shipping]="money(sale.shippingCost)"
+            [salesTax]="money(sale.salesTax)"
+            [total]="money(sale.total)"
+          >
+            <bt-order-party role="Buyer" [displayName]="sale.buyerDisplayName" />
+          </bt-order-summary>
+        }
+      </div>
+    }
+  }
+}

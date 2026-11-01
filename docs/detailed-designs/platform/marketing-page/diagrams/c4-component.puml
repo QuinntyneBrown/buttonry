@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components - Introduce the founder and her collection
+Container_Boundary(slice, "Marketing frontend") {
+  Component(entry, "Static marketing host", "Static host", "Feature entry point")
+  Component(handler, "PitchVideoDialog", "Dialog", "Optional accessible playback")
+  Component(entity, "MarketingContent", "Domain or read model", "Feature state and invariants")
+}
+Rel(entry, handler, "Dispatches validated action")
+Rel(handler, entity, "Reads or applies rules")
+@enduml

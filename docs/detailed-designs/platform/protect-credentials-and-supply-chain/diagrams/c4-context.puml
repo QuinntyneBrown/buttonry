@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Protect credentials and the supply chain
+
+Person(member, "Customer", "Signs in with an email and password")
+Person(dev, "Developer", "Changes Buttonry through pull requests")
+System(buttonry, "Buttonry", "Marketplace; stores only password hashes")
+System_Ext(vault, "Secret store", "Hosting platform vault <TO SUPPLY>")
+System_Ext(github, "GitHub", "Repository, Actions CI, code scanning")
+System_Ext(advisories, "Vulnerability databases", "Advisories for NuGet and npm packages")
+
+Rel(member, buttonry, "Signs in to", "HTTPS")
+Rel(buttonry, vault, "Loads secrets at start using workload identity", "HTTPS")
+Rel(dev, github, "Opens pull requests in")
+Rel(github, advisories, "Downloads advisories from", "HTTPS")
+Rel(github, buttonry, "Builds and deploys")
+@enduml

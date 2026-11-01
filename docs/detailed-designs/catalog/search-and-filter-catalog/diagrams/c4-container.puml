@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers â€” Search and filter the catalog
+
+Person(visitor, "Visitor or member", "Narrows the catalog")
+System_Boundary(buttonry, "Buttonry") {
+  Container(web, "Buttonry Web", "Angular", "Top-bar search, filter sidebar and sheet, URL-held result set")
+  Container(api, "Buttonry API", "ASP.NET Core", "GET /api/catalog/listings, /listings/count, /brands")
+  ContainerDb(db, "Buttonry database", "SQL Server", "Listings")
+}
+Rel(visitor, web, "Uses", "HTTPS")
+Rel(web, api, "Sends URL parameters", "JSON/HTTPS")
+Rel(api, db, "Filtered, ranked and grouped queries", "EF Core")
+@enduml

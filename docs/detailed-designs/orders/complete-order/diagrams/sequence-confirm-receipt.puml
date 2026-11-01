@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+title Behaviour - Confirm safe receipt
+autonumber
+actor "Customer or completion worker" as actor
+box "Frontend - Buttonry Web" #E0F2FE
+ participant "OrderDetailPage" as page
+ participant "OrdersApi" as client
+end box
+box "Backend - Buttonry API" #D1FADF
+ participant "OrdersController" as entry
+end box
+box "Backend - Buttonry Application and Domain" #ECFDF3
+ participant "ConfirmReceiptCommandHandler" as handler
+ participant "Order" as model
+end box
+box "Backend - Buttonry Infrastructure" #FFF4E5
+ database "Feature state / unit of work" as db
+end box
+participant "Payment provider" as provider
+actor -> page : Confirm safe receipt
+page -> client : POST /api/orders/{id}/receipt
+client -> entry : Typed HTTPS request
+entry -> handler : Authenticate session or signed callback
+handler -> db : Load authorized current state
+db --> handler : Current state
+alt Access, validation or state check refuses the action
+ handler -> handler : Preserve state and return domain refusal
+else Authorized and valid action
+handler -> handler : Require order buyer [L2-010]
+handler -> model : Reject current open problem [L2-034, L2-036]
+handler -> handler : Record delivery if needed and complete with buyer actor
+handler -> db : Commit valid state and outbox atomically
+db --> handler : Result
+end
+handler --> entry : Result or domain refusal
+entry --> client : Typed result or ProblemDetails
+client --> page : Update feature state
+page --> actor : Completed or 409 while problem remains; 404 another buyer
+note over entry, handler
+Completed or 409 while problem remains; 404 another buyer
+end note
+@enduml

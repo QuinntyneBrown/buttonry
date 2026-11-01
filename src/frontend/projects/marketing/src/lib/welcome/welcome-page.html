@@ -1,0 +1,82 @@
+<bt-marketing-hero
+  headingId="welcome-title"
+  eyebrow="Jewelry · Clothing · Housewares · Electronics"
+  lede="Buttonry is the marketplace made only for vintage — for families downsizing a lifetime of treasures, and the people who’ll love them next."
+>
+  <ng-container title>A home for the things that <em>mattered.</em></ng-container>
+  <ng-container actions>
+    @if (origin) {
+      <a btButton="primary" size="lg" [href]="catalogExternal">Shop the catalog</a>
+    } @else {
+      <a btButton="primary" size="lg" [routerLink]="catalogHref">Shop the catalog</a>
+    }
+    @if (origin) {
+      <a btButton size="lg" [href]="sellExternal()">Start selling</a>
+    } @else {
+      <a btButton size="lg" [routerLink]="sellHref()">Start selling</a>
+    }
+  </ng-container>
+  <bt-video-poster media poster="/media/buttonry-hero.jpg" label="Play" duration="0:29" (watch)="openVideo()" />
+</bt-marketing-hero>
+
+<bt-feature-band
+  headingId="shoppers-title"
+  eyebrow="For shoppers"
+  heading="Every piece is at least 20 years old."
+  [points]="shopperPoints"
+>
+  @if (origin) {
+    <a btButton="primary" [href]="catalogExternal" actions>Browse the catalog</a>
+  } @else {
+    <a btButton="primary" [routerLink]="catalogHref" actions>Browse the catalog</a>
+  }
+</bt-feature-band>
+
+<bt-feature-band
+  headingId="sellers-title"
+  eyebrow="For sellers"
+  heading="Downsizing? Let your treasures find their next home."
+  tone="sell"
+  [points]="sellerPoints"
+>
+  @if (origin) {
+    <a btButton="inverse" [href]="sellExternal()" actions>List your first item</a>
+  } @else {
+    <a btButton="inverse" [routerLink]="sellHref()" actions>List your first item</a>
+  }
+</bt-feature-band>
+
+<bt-feature-band headingId="how-title" eyebrow="How it works" heading="Three steps. That’s it." [stacked]="true">
+  <bt-steps [steps]="steps" />
+</bt-feature-band>
+
+<bt-feature-band headingId="story-title" eyebrow="Our story" heading="sy·ca·pooke" tone="story" [stacked]="true">
+  <div class="story">
+    <bt-quote [text]="founderQuote" cite="Founder, age 70, grandmother of five" />
+    <figure class="story__photo">
+      <img
+        src="/media/buttonry-founder.jpg"
+        width="928"
+        height="1152"
+        loading="lazy"
+        alt="Our founder, smiling in her living room and holding a framed family photograph"
+      />
+    </figure>
+  </div>
+</bt-feature-band>
+
+<bt-feature-band
+  headingId="closing-title"
+  heading=""
+  lede="New treasures arrive daily, every one at least 20 years old."
+  tone="sell"
+  [stacked]="true"
+  [closing]="true"
+>
+  <ng-container title>Treasures with a <em>story.</em></ng-container>
+  @if (origin) {
+    <a btButton="inverse" size="lg" [href]="catalogExternal" actions>Shop the catalog</a>
+  } @else {
+    <a btButton="inverse" size="lg" [routerLink]="catalogHref" actions>Shop the catalog</a>
+  }
+</bt-feature-band>

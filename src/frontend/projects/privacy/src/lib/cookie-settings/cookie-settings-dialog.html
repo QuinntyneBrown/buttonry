@@ -1,0 +1,8 @@
+<bt-dialog heading="Cookie settings" size="sm">
+  <bt-switch label="Strictly necessary" hint="Sign-in and checkout. Always on." [checked]="true" disabled />
+  <bt-switch label="Analytics" hint="Helps us see which pages are slow." [(checked)]="analytics" autofocus />
+  <ng-container ngProjectAs="[footer]">
+    <button btButton type="button" (click)="ref.close()">Cancel</button>
+    <button btButton="primary" type="button" (click)="save()">Save</button>
+  </ng-container>
+</bt-dialog>

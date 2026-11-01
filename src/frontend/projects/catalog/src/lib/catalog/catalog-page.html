@@ -1,0 +1,123 @@
+@if (store.view() === 'offline') {
+  <bt-alert tone="warning" icon="wifi-off" live="polite" [banner]="true"
+    >You’re offline. Showing items from your last visit.</bt-alert
+  >
+}
+@if (query().q) {
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Search</p>
+      <h1>“{{ query().q }}”</h1>
+    </div>
+  </div>
+} @else if (categoryHeader(); as category) {
+  <div class="page-header">
+    <div class="stack stack--sm">
+      <h1>{{ category.label }}</h1>
+      <div><bt-size-tag [label]="category.sizeLabel" [large]="true" /></div>
+    </div>
+  </div>
+} @else if (filtered()) {
+  <div class="page-header"><h1>Shop</h1></div>
+} @else {
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 class="display" id="hero-title">Find something <em>with a story.</em></h1>
+    <p class="lead">
+      Jewelry, clothing, housewares and electronics, every piece at least 20 years old and listed by a real person.
+    </p>
+    <form class="search" role="search" (submit)="searchFor($event, heroTerm.value)">
+      <label class="visually-hidden" for="hero-q">Search for a treasure</label>
+      <bt-icon name="search" />
+      <input
+        #heroTerm
+        class="input"
+        id="hero-q"
+        name="q"
+        type="search"
+        placeholder="Try “pearl necklace” or “tea set”"
+        autocomplete="off"
+      />
+      <button btButton="primary" type="submit">Search</button>
+    </form>
+  </section>
+}
+<div class="catalog-layout">
+  <bt-filters-sidebar [query]="query()" [brands]="brands()" (apply)="show($event)" />
+  <section aria-label="Listings">
+    <div class="toolbar">
+      <div class="toolbar__left">
+        <button btButton class="filters-toggle" type="button" (click)="openFilters()">Filters</button>
+        <span class="text-muted text-sm" aria-live="polite">
+          @switch (store.view()) {
+            @case ('loading') {
+              <span class="skeleton skeleton--text catalog__count-skeleton"></span>
+            }
+            @case ('offline') {
+              {{ store.totalCount() | number }} saved items
+            }
+            @case ('error') {}
+            @default {
+              {{ store.totalCount() | number }} items
+            }
+          }
+        </span>
+        @for (chip of chips(); track chip.label) {
+          <bt-chip [label]="chip.label" (remove)="show(chip.without)" />
+        }
+        @if (filtered() && store.view() !== 'empty') {
+          <button btButton="link" class="btn--sm" type="button" (click)="clearAll()">Clear all</button>
+        }
+      </div>
+      <label class="sort">
+        <span class="text-sm text-muted">Sort</span>
+        <select #sort class="select input--sm" (change)="sortBy(sort.value)">
+          @for (option of sorts; track option.value) {
+            <option [value]="option.value" [selected]="query().sort === option.value">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+    </div>
+    @switch (store.view()) {
+      @case ('empty') {
+        @if (filtered()) {
+          <bt-empty-state icon="search" heading="No items match">
+            Try fewer filters or a different word.
+            <button actions btButton="primary" type="button" (click)="clearAll()">Clear search and filters</button>
+          </bt-empty-state>
+        } @else {
+          <bt-empty-state icon="tag" heading="Nothing listed yet">
+            Be the first to list a pair of 12s or something in L.
+            <a actions btButton="primary" routerLink="/sell">Sell an item</a>
+          </bt-empty-state>
+        }
+      }
+      @case ('error') {
+        <bt-empty-state icon="refresh" heading="Couldn’t load items" tone="error">
+          Something went wrong on our side. <span class="ref">{{ store.errorRef() }}</span>
+          <button actions btButton="primary" type="button" (click)="store.retry()">
+            <bt-icon name="refresh" />Try again
+          </button>
+        </bt-empty-state>
+      }
+      @default {
+        <bt-listing-grid [cards]="cards()" [loading]="store.view() === 'loading'" />
+        @if (store.moreErrorRef(); as ref) {
+          <div class="catalog__more-error">
+            <bt-alert tone="danger" heading="Couldn’t load more items"
+              >Something went wrong on our side. <span class="ref">{{ ref }}</span>
+              <button btButton="link" type="button" (click)="store.loadMore()">Try again</button></bt-alert
+            >
+          </div>
+        }
+        @if (store.view() === 'loaded') {
+          <bt-load-more
+            [shown]="store.items().length"
+            [total]="store.totalCount()"
+            [busy]="store.loadingMore()"
+            (loadMore)="store.loadMore()"
+          />
+        }
+      }
+    }
+  </section>
+</div>

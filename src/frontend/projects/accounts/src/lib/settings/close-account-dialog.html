@@ -1,0 +1,52 @@
+<bt-dialog heading="Close account?" icon="trash" tone="danger">
+  <span description>Your data is erased within 30 days. This can’t be undone.</span>
+  @switch (state()) {
+    @case ('blocked') {
+      <bt-alert tone="warning" heading="Finish your open orders first">
+        <ul class="stack">
+          @for (order of blocking(); track order.id) {
+            <li>
+              <a [routerLink]="['/orders', order.id]" (click)="ref.close()">{{ order.reference }}</a> ·
+              {{ order.status }}
+            </li>
+          }
+        </ul>
+      </bt-alert>
+    }
+    @case ('google') {
+      <p>Your account signs in with Google. Sign in with Google again to confirm closing it.</p>
+    }
+    @default {
+      @if (state() === 'failed') {
+        <bt-alert top tone="danger" heading="Couldn’t close your account"
+          >Try again. <span class="ref">{{ failure() }}</span></bt-alert
+        >
+      }
+      <bt-form-field fieldId="close-password" label="Enter your password to confirm" [error]="passwordError()">
+        <input
+          class="input"
+          id="close-password"
+          type="password"
+          autocomplete="current-password"
+          data-autofocus
+          [value]="password()"
+          [attr.aria-invalid]="passwordError() ? 'true' : null"
+          (input)="password.set($any($event.target).value)"
+        />
+      </bt-form-field>
+    }
+  }
+  <ng-container ngProjectAs="[footer]">
+    @if (state() === 'blocked') {
+      <button btButton="primary" type="button" (click)="ref.close()">Close</button>
+    } @else if (state() === 'google') {
+      <button btButton type="button" (click)="ref.close()">Cancel</button>
+      <a btButton="danger" href="/api/auth/google/start">Continue with Google</a>
+    } @else {
+      <button btButton type="button" [disabled]="state() === 'busy'" (click)="ref.close()">Cancel</button>
+      <button btButton="danger" type="button" [busy]="state() === 'busy'" (click)="submit()">
+        {{ state() === 'failed' ? 'Try again' : 'Close account' }}
+      </button>
+    }
+  </ng-container>
+</bt-dialog>

@@ -1,0 +1,93 @@
+<div class="page-header">
+  <div>
+    <h1>Emails</h1>
+    @if (view() !== 'error') {
+      <p class="subtitle">
+        @if (founder()) {
+          Security, sales, ship-by and support emails are always on.
+        } @else {
+          Security and purchase emails are always on.
+        }
+      </p>
+    }
+  </div>
+</div>
+@switch (view()) {
+  @case ('loading') {
+    <div class="page--form">
+      <ul class="settings-list" aria-busy="true" aria-label="Loading">
+        @for (row of [1, 2, 3, 4]; track row) {
+          <li>
+            <div class="settings-list__body">
+              <span class="skeleton skeleton--text emails__skeleton-title"></span>
+              <span class="skeleton skeleton--text emails__skeleton-meta"></span>
+            </div>
+            <span class="skeleton skeleton--rect emails__skeleton-switch"></span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+  @case ('error') {
+    <bt-empty-state icon="refresh" heading="Couldn’t load email settings" tone="error">
+      Something went wrong on our side. <span class="ref">{{ errorRef() }}</span>
+      <button actions btButton="primary" type="button" (click)="retry()"><bt-icon name="refresh" />Try again</button>
+    </bt-empty-state>
+  }
+  @default {
+    @if (saved()) {
+      <div class="emails__saved">
+        <bt-alert tone="success" heading="Email settings saved" live="polite" />
+      </div>
+    }
+    <form class="page--form" (submit)="save($event)">
+      <ul class="settings-list">
+        <li>
+          <div class="settings-list__body">
+            <span class="settings-list__title">Account security</span>
+            <span class="settings-list__meta">Sign-in alerts, password resets</span>
+          </div>
+          <bt-switch label="Account security emails, always on" [checked]="true" disabled />
+        </li>
+        <li>
+          <div class="settings-list__body">
+            <span class="settings-list__title">{{ founder() ? 'Sales' : 'Purchases' }}</span>
+            <span class="settings-list__meta">{{
+              founder() ? 'New sales, cancellations' : 'Confirmation, shipping, delivery, refunds'
+            }}</span>
+          </div>
+          <bt-switch label="Order emails, always on" [checked]="true" disabled />
+        </li>
+        @if (founder()) {
+          <li>
+            <div class="settings-list__body">
+              <span class="settings-list__title">Ship-by reminders</span>
+              <span class="settings-list__meta">When a sale is waiting to ship</span>
+            </div>
+            <bt-switch label="Ship-by reminder emails, always on" [checked]="true" disabled />
+          </li>
+          <li>
+            <div class="settings-list__body">
+              <span class="settings-list__title">Support</span>
+              <span class="settings-list__meta">Customer problems and cancellation requests</span>
+            </div>
+            <bt-switch label="Support emails, always on" [checked]="true" disabled />
+          </li>
+        } @else {
+          <li>
+            <div class="settings-list__body">
+              <span class="settings-list__title">News from Buttonry</span>
+              <span class="settings-list__meta">New treasures, now and then</span>
+            </div>
+            <bt-switch label="Marketing emails" [(checked)]="marketing" [disabled]="saving()" />
+          </li>
+        }
+      </ul>
+      @if (!founder()) {
+        <div class="form-actions emails__actions">
+          <button btButton="primary" type="submit" [busy]="saving()">Save</button>
+        </div>
+      }
+    </form>
+  }
+}

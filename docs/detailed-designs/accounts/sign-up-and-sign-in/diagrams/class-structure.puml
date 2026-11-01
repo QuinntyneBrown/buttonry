@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+title Class structure - Sign up and sign in
+skinparam class {
+ BorderColor #344054
+ FontColor #101828
+ BackgroundColor #F9FAFB
+}
+class "AuthController" as Entry {
+}
+class "SignInCommandHandler" as Handler {
+ +Handle(request: SignInCommand, cancellationToken: CancellationToken): Task<Result<SignedIn>>
+}
+class "Session" as Model {
+ +Guid MemberId
+ +Guid FamilyId
+ +DateTime ExpiresAt
+ +DateTime? RevokedAt
+}
+class "SignInCommand" as Request {
+ +string? Email
+ +string? Password
+}
+Handler ..> Request : handles
+Entry ..> Handler : dispatches
+Handler --> Model : reads or changes
+interface IButtonryDbContext {
+ +SaveChangesAsync(): Task<int>
+}
+Handler ..> IButtonryDbContext : persistence boundary
+note bottom of Handler
+Operation names summarize target responsibilities.
+Description distinguishes existing and proposed types.
+end note
+@enduml

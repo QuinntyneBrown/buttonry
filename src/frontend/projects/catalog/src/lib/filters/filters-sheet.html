@@ -1,0 +1,16 @@
+<bt-sheet heading="Filters" closeLabel="Close filters" [side]="true">
+  <bt-error-summary heading="Check the price range" [errors]="summary()" />
+  <bt-filter-form idPrefix="sheet" [query]="draft()" [brands]="data.brands" (changed)="edit($event)" />
+  <button footer btButton type="button" (click)="clear()">Clear</button>
+  <button
+    footer
+    btButton="primary"
+    type="button"
+    data-autofocus
+    [disabled]="!!error()"
+    [attr.aria-busy]="busy() ? 'true' : null"
+    (click)="apply()"
+  >
+    {{ label() }}
+  </button>
+</bt-sheet>

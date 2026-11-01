@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Deploy to production
+
+Person(owner, "Owner", "Merges to main; rolls back one unit by hand")
+Person(visitor, "Visitor", "Reads https://buttonry.canadacentral.cloudapp.azure.com/welcome/")
+Person(member, "Customer", "Uses https://buttonry.canadacentral.cloudapp.azure.com")
+System_Ext(gh, "GitHub Actions", "CI (verify), then Deploy marketing and Deploy app side by side")
+System_Ext(ghcr, "GitHub Container Registry", "buttonry-marketing:{MARKETING_TAG}; buttonry-app|api|worker|migrator:{APP_TAG}")
+System_Boundary(vm, "Azure Linux VM (B1s/B1ms, 2 GB swap) — /opt/buttonry") {
+  Container(edge, "edge", "Caddy (official image)", "64 MB; TLS for Azure DNS; routes by path")
+  Container(marketing, "marketing", "Caddy", "64 MB; marketing-only Angular build; no-cache index.html; links to the app origin")
+  Container(app, "app", "Caddy", "64 MB; full Angular application; no-cache index.html; proxies /api and /photos")
+  Container(api, "api", "Buttonry.Api", "512 MB; /api/health needs no database")
+  Container(worker, "worker", "Buttonry.Worker", "384 MB; outbox and jobs")
+  Container(migrator, "migrator", "Buttonry.Migrator", "Run once per app deploy before the restart")
+}
+ContainerDb(sql, "Buttonry database", "Azure SQL Database, Basic")
+Rel(owner, gh, "git push main / Run workflow (ref)")
+Rel(gh, ghcr, "Pushes images")
+Rel(gh, marketing, "Deploy marketing: SSH, MARKETING_TAG, up -d --no-deps marketing edge")
+Rel(gh, migrator, "Deploy app: SSH, APP_TAG, migrate, up -d --no-deps api worker app edge")
+Rel(gh, edge, "Smoke tests: GET /welcome/ and /api/health")
+Rel(visitor, edge, "HTTPS /welcome/")
+Rel(member, edge, "HTTPS /")
+Rel(edge, marketing, "HTTP 80 (/welcome/*, stripped)")
+Rel(edge, app, "HTTP 80 (other paths)")
+Rel(app, api, "HTTP 8080 (/api, /photos)")
+Rel(api, sql, "SQL")
+Rel(worker, sql, "SQL")
+Rel(migrator, sql, "Migrate()")
+@enduml

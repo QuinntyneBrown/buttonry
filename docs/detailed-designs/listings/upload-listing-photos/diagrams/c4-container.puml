@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers - Upload founder listing photos
+Person(user, "Founder")
+System_Boundary(shop, "Buttonry") {
+  Container(web, "Buttonry Web", "Angular", "Role-aware feature UI")
+  Container(api, "Buttonry API", "ASP.NET Core", "Server authorization and feature commands")
+  Container(worker, "Buttonry Worker", ".NET", "Due jobs and durable retries")
+  ContainerDb(db, "Buttonry database", "SQL Server", "Account, inventory, order and outbox state")
+}
+Rel(user, web, "Uses", "HTTPS")
+Rel(web, api, "Calls typed client", "JSON/HTTPS")
+Rel(api, db, "Reads and commits feature state", "EF Core")
+Rel(worker, db, "Processes due work", "EF Core")
+@enduml

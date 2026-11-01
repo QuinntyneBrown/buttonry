@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — View a listing's detail
+
+Person(viewer, "Visitor or member", "Views one listing")
+Container_Boundary(web, "Buttonry Web") {
+  Component(page, "ListingDetailPage", "@buttonry/catalog route component", "items/:reference, view states, breadcrumb, info column")
+  Component(store, "ListingDetailStore", "Angular signal store", "listing, view, primaryAction, similar")
+  Component(gallery, "bt-gallery", "@buttonry/components", "Thumbnails, swipe below 992 px")
+  Component(seller, "bt-founder-summary", "@buttonry/components", "No reviews yet and founder story link")
+  Component(buybar, "bt-buy-bar", "@buttonry/components", "Buy now, sign in to buy, Edit listing")
+  Component(client, "CatalogApi", "@buttonry/api", "listing(reference), listings(page, category)")
+}
+Container_Boundary(api, "Buttonry API") {
+  Component(ctrl, "CatalogController", "ASP.NET Core controller", "GET /api/catalog/listings/{reference}")
+  Component(handler, "GetListingDetailQueryHandler", "MediatR handler", "Visibility, viewer relation, total")
+  Component(vis, "ListingDetailVisibility", "Domain rule", "Draft and Removed only for the founder")
+  Component(dbctx, "IButtonryDbContext", "Application port, EF Core", "Listings, ListingPhotos, Members")
+}
+ContainerDb(db, "Buttonry database", "SQL Server", "Listings, ListingPhotos, Members")
+
+Rel(viewer, page, "Opens /items/{reference}")
+Rel(page, store, "load(reference)")
+Rel(page, gallery, "Renders")
+Rel(page, seller, "Renders")
+Rel(page, buybar, "Renders for primaryAction")
+Rel(store, client, "Requests listing")
+Rel(client, ctrl, "GET with credentials", "JSON/HTTPS")
+Rel(ctrl, handler, "GetListingDetailQuery")
+Rel(handler, vis, "CanView")
+Rel(handler, dbctx, "Reads, AsNoTracking")
+Rel(dbctx, db, "Reads", "EF Core")
+@enduml

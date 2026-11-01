@@ -1,0 +1,22 @@
+<bt-dialog heading="Verify your email first" icon="mail">
+  <span description
+    >Open the link we sent to <strong>{{ data.email }}</strong> to buy and sell.</span
+  >
+  @if (state() === 'sent') {
+    <bt-alert top tone="success" heading="Link sent" live="polite">Earlier links no longer work.</bt-alert>
+  } @else if (state() === 'limited') {
+    <bt-alert top tone="warning" heading="Too many requests" icon="clock"
+      >You can request 3 links an hour. Try again later.</bt-alert
+    >
+  }
+  <ng-container ngProjectAs="[footer]">
+    @if (state() === 'sent' || state() === 'limited') {
+      <button btButton="primary" type="button" data-autofocus (click)="ref.close()">Done</button>
+    } @else {
+      <button btButton type="button" (click)="ref.close()">Not now</button>
+      <button btButton="primary" type="button" data-autofocus [busy]="state() === 'busy'" (click)="resend()">
+        Resend link
+      </button>
+    }
+  </ng-container>
+</bt-dialog>

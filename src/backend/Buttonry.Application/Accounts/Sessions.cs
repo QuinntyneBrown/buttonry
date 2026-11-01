@@ -1,0 +1,186 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Buttonry.Application.Abstractions;
+using Buttonry.Application.Common;
+using Buttonry.Application.Notifications;
+using Buttonry.Application.Shop;
+using Buttonry.Domain.Members;
+using Buttonry.Domain.Notifications;
+
+namespace Buttonry.Application.Accounts;
+
+/// <summary>A started or renewed session: the member and the raw refresh token for the cookie.</summary>
+public sealed record SignedIn(Guid MemberId, string RefreshToken, DateTime RefreshExpiresAt);
+
+/// <summary>Starts a session for a member who has just proved who they are, by password or by Google (L2-008).</summary>
+public static class SessionIssuer
+{
+    public static async Task<SignedIn> StartAsync(IButtonryDbContext db, Guid memberId, DateTime now, CancellationToken cancellationToken)
+    {
+        var token = SecureTokens.Create();
+        var session = Session.Start(memberId, SecureTokens.Hash(token), now);
+        db.Sessions.Add(session);
+        await db.SaveChangesAsync(cancellationToken);
+        return new SignedIn(memberId, token, session.ExpiresAt);
+    }
+}
+
+/// <summary>
+/// Signs a member in with email and password; one answer for an unknown email, a wrong password and
+/// a member who only signs in with Google (L2-006, L2-088).
+/// </summary>
+public sealed record SignInCommand(string? Email, string? Password) : IRequest<Result<SignedIn>>;
+
+public sealed class SignInCommandHandler(IButtonryDbContext db, IPasswordHasher hasher, TimeProvider clock, IEmailOutbox notifications)
+    : IRequestHandler<SignInCommand, Result<SignedIn>>
+{
+    public static readonly Error Incorrect = new(401, "SIGN_IN_FAILED", "Email or password is incorrect");
+
+    public static readonly Error Locked = new(429, "SIGN_IN_LOCKED", "Too many sign-in attempts. Try again in 15 minutes");
+
+    public async Task<Result<SignedIn>> Handle(SignInCommand command, CancellationToken cancellationToken)
+    {
+        var normalized = Member.Normalize(command.Email ?? string.Empty);
+        var member = await db.Members.SingleOrDefaultAsync(m => m.NormalizedEmail == normalized, cancellationToken);
+        var now = clock.GetUtcNow().UtcDateTime;
+        if (member is null)
+        {
+            return Incorrect;
+        }
+
+        if (member.IsLocked(now))
+        {
+            return Locked;
+        }
+
+        if (member.PasswordHash is null || !hasher.Verify(member.PasswordHash, command.Password ?? string.Empty))
+        {
+            if (member.RecordFailedSignIn(now))
+            {
+                notifications.Enqueue(NotificationType.AccountLocked, member.Id, new AccountLockedEmail(member.LockedUntil!.Value));
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
+            return Incorrect;
+        }
+
+        member.ClearSignInFailures();
+        return await SessionIssuer.StartAsync(db, member.Id, now, cancellationToken);
+    }
+}
+
+/// <summary>Exchanges a refresh token for a new one; a reused token revokes its whole family (L2-008).</summary>
+public sealed record RefreshSessionCommand(string? RefreshToken) : IRequest<Result<SignedIn>>;
+
+public sealed class RefreshSessionCommandHandler(IButtonryDbContext db, TimeProvider clock)
+    : IRequestHandler<RefreshSessionCommand, Result<SignedIn>>
+{
+    public static readonly Error Refused = new(401, "SESSION_EXPIRED", "Sign in again");
+
+    public async Task<Result<SignedIn>> Handle(RefreshSessionCommand command, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(command.RefreshToken))
+        {
+            return Refused;
+        }
+
+        var now = clock.GetUtcNow().UtcDateTime;
+        var hash = SecureTokens.Hash(command.RefreshToken);
+        var session = await db.Sessions.SingleOrDefaultAsync(s => s.TokenHash == hash, cancellationToken);
+        if (session is null)
+        {
+            return Refused;
+        }
+
+        if (session.RotatedAt is not null)
+        {
+            var family = await db.Sessions.Where(s => s.FamilyId == session.FamilyId).ToListAsync(cancellationToken);
+            family.ForEach(s => s.Revoke(now));
+            await db.SaveChangesAsync(cancellationToken);
+            return Refused;
+        }
+
+        if (!session.IsActive(now))
+        {
+            return Refused;
+        }
+
+        var token = SecureTokens.Create();
+        var next = session.Rotate(SecureTokens.Hash(token), now);
+        db.Sessions.Add(next);
+        await db.SaveChangesAsync(cancellationToken);
+        return new SignedIn(next.MemberId, token, next.ExpiresAt);
+    }
+}
+
+/// <summary>Revokes the session family of the presented refresh token (L2-008 AC4).</summary>
+public sealed record SignOutCommand(string? RefreshToken) : IRequest<Unit>;
+
+public sealed class SignOutCommandHandler(IButtonryDbContext db, TimeProvider clock) : IRequestHandler<SignOutCommand, Unit>
+{
+    public async Task<Unit> Handle(SignOutCommand command, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(command.RefreshToken))
+        {
+            return Unit.Value;
+        }
+
+        var hash = SecureTokens.Hash(command.RefreshToken);
+        var session = await db.Sessions.SingleOrDefaultAsync(s => s.TokenHash == hash, cancellationToken);
+        if (session is not null)
+        {
+            var now = clock.GetUtcNow().UtcDateTime;
+            var family = await db.Sessions.Where(s => s.FamilyId == session.FamilyId).ToListAsync(cancellationToken);
+            family.ForEach(s => s.Revoke(now));
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        return Unit.Value;
+    }
+}
+
+/// <summary>Revokes every session of the caller on every device (L2-008 AC5).</summary>
+public sealed record SignOutEverywhereCommand(Guid MemberId) : IRequest<Unit>;
+
+public sealed class SignOutEverywhereCommandHandler(IButtonryDbContext db, TimeProvider clock) : IRequestHandler<SignOutEverywhereCommand, Unit>
+{
+    public async Task<Unit> Handle(SignOutEverywhereCommand command, CancellationToken cancellationToken)
+    {
+        await SessionRevoker.RevokeAllAsync(db, command.MemberId, clock.GetUtcNow().UtcDateTime, cancellationToken);
+        return Unit.Value;
+    }
+}
+
+/// <summary>Revokes all of a member's sessions; shared by sign-out-everywhere and password reset.</summary>
+public static class SessionRevoker
+{
+    /// <summary>Marks every live session revoked; with <paramref name="save"/> false the caller saves it with its own change.</summary>
+    public static async Task RevokeAllAsync(IButtonryDbContext db, Guid memberId, DateTime now, CancellationToken cancellationToken, bool save = true)
+    {
+        var sessions = await db.Sessions.Where(s => s.MemberId == memberId && s.RevokedAt == null).ToListAsync(cancellationToken);
+        sessions.ForEach(s => s.Revoke(now));
+        if (save)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+        }
+    }
+}
+
+/// <summary>The signed-in member as the app shell needs it.</summary>
+public sealed record CurrentMemberDto(string DisplayName, string Email, bool EmailVerified, bool IsFounder = false);
+
+public sealed record GetCurrentMemberQuery(Guid MemberId) : IRequest<Result<CurrentMemberDto>>;
+
+public sealed class GetCurrentMemberQueryHandler(IButtonryDbContext db, IFounderAccess founder) : IRequestHandler<GetCurrentMemberQuery, Result<CurrentMemberDto>>
+{
+    public async Task<Result<CurrentMemberDto>> Handle(GetCurrentMemberQuery query, CancellationToken cancellationToken)
+    {
+        var member = await db.Members.AsNoTracking()
+            .Where(m => m.Id == query.MemberId && m.ClosedAt == null)
+            .Select(m => new CurrentMemberDto(m.DisplayName, m.Email, m.EmailVerifiedAt != null))
+            .SingleOrDefaultAsync(cancellationToken);
+        return member is null
+            ? new Error(401, "SESSION_EXPIRED", "Sign in again")
+            : member with { IsFounder = await founder.IsFounderAsync(query.MemberId, cancellationToken) };
+    }
+}

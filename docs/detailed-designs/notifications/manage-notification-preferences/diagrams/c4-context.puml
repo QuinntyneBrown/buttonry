@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title Context - Manage notification preferences
+Person(user, "Customer or founder", "Uses this shop capability")
+System(shop, "Buttonry", "Founder-owned antiques and vintage shop")
+Rel(user, shop, "Manage notification preferences", "HTTPS")
+System_Ext(provider, "Email provider", "External port; production adapter remains separately configured")
+Rel(shop, provider, "Uses signed, authenticated integration")
+@enduml

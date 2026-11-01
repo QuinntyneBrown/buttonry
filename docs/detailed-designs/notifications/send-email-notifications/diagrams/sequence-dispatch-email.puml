@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+title Behaviour - Send due message
+autonumber
+actor "Job scheduler" as actor
+box "Backend - Buttonry Worker" #D1FADF
+ participant "EmailDispatchJob" as entry
+end box
+box "Backend - Buttonry Application and Domain" #ECFDF3
+ participant "DispatchEmailsHandler" as handler
+ participant "OutboxMessage" as model
+end box
+box "Backend - Buttonry Infrastructure" #FFF4E5
+ database "Feature state / unit of work" as db
+end box
+participant "Email provider" as provider
+actor -> entry : Send due message
+entry -> handler : Authenticate session or signed callback
+handler -> db : Load authorized current state
+db --> handler : Current state
+alt Access, validation or state check refuses the action
+ handler -> handler : Preserve state and return domain refusal
+else Authorized and valid action
+handler -> handler : Apply essential category or current marketing consent [L2-043]
+handler -> model : Render recipient-authorized link and guard sensitive content
+handler -> provider : Send through IEmailSender with idempotency key [L2-042]
+provider --> handler : Confirmed result or temporary failure
+handler -> db : Commit valid state and outbox atomically
+db --> handler : Result
+end
+handler --> entry : Result or domain refusal
+entry --> actor : Sent within two minutes normally; transient failures back off up to 24 hours
+note over entry, handler
+Sent within two minutes normally; transient failures back off up to 24 hours
+end note
+@enduml

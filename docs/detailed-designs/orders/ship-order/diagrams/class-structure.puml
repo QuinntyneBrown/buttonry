@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+title Class structure - Ship founder orders
+skinparam class {
+ BorderColor #344054
+ FontColor #101828
+ BackgroundColor #F9FAFB
+}
+class "OrdersController" as Entry {
+}
+class "AddTrackingCommandHandler" as Handler {
+ +Handle(request: AddTrackingCommand, cancellationToken: CancellationToken): Task<Result<SaleDto>>
+}
+class "Order" as Model {
+ +OrderStatus Status
+ +string? TrackingNumber
+ +DateTime ShipBy
+}
+class "AddTrackingCommand" as Request {
+ +Guid SellerId
+ +Guid OrderId
+ +string? Carrier
+ +string? TrackingNumber
+}
+Handler ..> Request : handles
+Entry ..> Handler : dispatches
+Handler --> Model : reads or changes
+interface IButtonryDbContext {
+ +SaveChangesAsync(): Task<int>
+}
+Handler ..> IButtonryDbContext : persistence boundary
+interface IFounderAccess {
+ +IsFounderAsync(memberId: Guid): Task<bool>
+}
+Handler ..> IFounderAccess : protected shop actions
+note bottom of Handler
+Operation names summarize target responsibilities.
+Description distinguishes existing and proposed types.
+end note
+@enduml

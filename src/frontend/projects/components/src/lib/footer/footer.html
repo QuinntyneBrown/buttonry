@@ -1,0 +1,87 @@
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <bt-logo variant="light" />
+      <p>
+        The marketplace made only for vintage: every piece at least 20 years old, listed by a real person with a real
+        story.
+      </p>
+    </div>
+    <nav class="footer__col" aria-labelledby="footer-shop">
+      <h2 id="footer-shop">Shop</h2>
+      <ul>
+        <li>
+          @if (origin) {
+            <a [href]="href('/jewelry')">Jewelry</a>
+          } @else {
+            <a [routerLink]="'/jewelry'">Jewelry</a>
+          }
+        </li>
+        <li>
+          @if (origin) {
+            <a [href]="href('/clothing')">Clothing</a>
+          } @else {
+            <a [routerLink]="'/clothing'">Clothing</a>
+          }
+        </li>
+        <li>
+          @if (origin) {
+            <a [href]="href('/housewares')">Housewares</a>
+          } @else {
+            <a [routerLink]="'/housewares'">Housewares</a>
+          }
+        </li>
+        <li>
+          @if (origin) {
+            <a [href]="href('/electronics')">Electronics</a>
+          } @else {
+            <a [routerLink]="'/electronics'">Electronics</a>
+          }
+        </li>
+      </ul>
+    </nav>
+    <nav class="footer__col" aria-labelledby="footer-sell">
+      <h2 id="footer-sell">Sell</h2>
+      <ul>
+        <li>
+          @if (origin) {
+            <a [href]="href('/sell')">Start selling</a>
+          } @else {
+            <a [routerLink]="'/sell'">Start selling</a>
+          }
+        </li>
+        <li>
+          @if (origin) {
+            <a [href]="href('/rules')">Shop policies</a>
+          } @else {
+            <a [routerLink]="'/rules'">Shop policies</a>
+          }
+        </li>
+      </ul>
+    </nav>
+    <nav class="footer__col" aria-labelledby="footer-about">
+      <h2 id="footer-about">Buttonry</h2>
+      <ul>
+        <li><a routerLink="/welcome">About Buttonry</a></li>
+        <li>
+          @if (origin) {
+            <a [href]="href('/privacy')">Privacy</a>
+          } @else {
+            <a [routerLink]="'/privacy'">Privacy</a>
+          }
+        </li>
+        <li>
+          @if (origin) {
+            <a [href]="href('/terms')">Terms</a>
+          } @else {
+            <a [routerLink]="'/terms'">Terms</a>
+          }
+        </li>
+        <li><button class="footer__link" type="button" (click)="cookieSettings.emit()">Cookie settings</button></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="footer__bottom">
+    <span>© {{ year }} Buttonry. Made with love by a grandmother and her family.</span>
+  </div>
+</footer>

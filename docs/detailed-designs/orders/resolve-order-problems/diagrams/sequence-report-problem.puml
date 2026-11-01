@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+title Behaviour - Report a purchase problem
+autonumber
+actor "Customer" as actor
+box "Frontend - Buttonry Web" #E0F2FE
+ participant "ProblemDetailPage" as page
+ participant "ProblemsApi" as client
+end box
+box "Backend - Buttonry API" #D1FADF
+ participant "OrderProblemsController" as entry
+end box
+box "Backend - Buttonry Application and Domain" #ECFDF3
+ participant "ReportProblemCommandHandler" as handler
+ participant "OrderProblem" as model
+end box
+box "Backend - Buttonry Infrastructure" #FFF4E5
+ database "Feature state / unit of work" as db
+end box
+participant "Payment provider" as provider
+actor -> page : Report a purchase problem
+page -> client : POST /api/orders/{id}/problem
+client -> entry : Typed HTTPS request
+entry -> handler : Authenticate session or signed callback
+handler -> db : Load authorized current state
+db --> handler : Current state
+alt Access, validation or state check refuses the action
+ handler -> handler : Preserve state and return domain refusal
+else Authorized and valid action
+handler -> handler : Verify buyer and Shipped or in-window Delivered order [L2-036]
+handler -> model : Validate up to four private photos using L2-017
+handler -> handler : Open problem and pause completion; notify founder and buyer
+handler -> db : Commit valid state and outbox atomically
+db --> handler : Result
+end
+handler --> entry : Result or domain refusal
+entry --> client : Typed result or ProblemDetails
+client --> page : Update feature state
+page --> actor : 201 problem; 404 other buyer; 409 closed reporting window
+note over entry, handler
+201 problem; 404 other buyer; 409 closed reporting window
+end note
+@enduml

@@ -1,0 +1,17 @@
+@if (shell() === 'auth') {
+  <div class="auth-layout">
+    <bt-logo size="lg" />
+    <main id="main" class="auth-card" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+} @else {
+  <bt-top-bar [member]="auth.member()" [query]="query()" (searched)="search($event)" />
+  @if (accountArea() && auth.member()) {
+    <div class="container"><bt-subnav [label]="tabsLabel()" [items]="tabs()" /></div>
+  }
+  <main id="main" [class]="shell() === 'marketing' ? 'marketing' : 'container page'" tabindex="-1">
+    <router-outlet />
+  </main>
+  <bt-footer (cookieSettings)="cookieSettings.open()" />
+}

@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Manage cookie consent
+
+Person(visitor, "Visitor", "Anyone using Buttonry, signed in or not")
+System(buttonry, "Buttonry", "Marketplace for vintage jewelry, clothing, housewares and electronics")
+System_Ext(analytics, "Analytics provider", "Page-view and timing analytics (product not chosen yet)")
+
+Rel(visitor, buttonry, "Browses; accepts or declines analytics", "HTTPS")
+Rel(buttonry, analytics, "Sends page views only after consent", "HTTPS from the browser")
+@enduml

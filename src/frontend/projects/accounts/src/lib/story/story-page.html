@@ -1,0 +1,76 @@
+<div class="page-header">
+  <div><h1>Story</h1></div>
+</div>
+@switch (view()) {
+  @case ('loading') {
+    <div class="page--form" aria-busy="true" aria-label="Loading">
+      <span class="skeleton skeleton--text"></span>
+      <span class="skeleton skeleton--rect"></span>
+    </div>
+  }
+  @case ('error') {
+    <bt-empty-state icon="refresh" heading="Couldn’t load your story" tone="error">
+      Something went wrong on our side. <span class="ref">{{ failure() }}</span>
+      <button actions btButton="primary" type="button" (click)="load()"><bt-icon name="refresh" />Try again</button>
+    </bt-empty-state>
+  }
+  @default {
+    @if (summary().length) {
+      <bt-error-summary [errors]="summary()" />
+    }
+    @if (view() === 'saved') {
+      <bt-alert tone="success" heading="Story saved" live="polite">
+        <a actions [routerLink]="publicPath()">View public page</a>
+      </bt-alert>
+    }
+    <div class="page--form">
+      <form class="stack stack--lg" novalidate [formGroup]="form" (ngSubmit)="save()">
+        <div class="cluster">
+          <span class="avatar avatar--xl" aria-hidden="true">{{ initials() }}</span>
+        </div>
+        <bt-form-field
+          fieldId="display-name"
+          label="Display name"
+          help="Shown on your public page."
+          [error]="errors()['displayName'] ?? null"
+        >
+          <input
+            class="input"
+            id="display-name"
+            type="text"
+            autocomplete="username"
+            formControlName="displayName"
+            [attr.aria-invalid]="errors()['displayName'] ? 'true' : null"
+          />
+        </bt-form-field>
+        <bt-form-field fieldId="story" label="Story" [error]="errors()['story'] ?? null">
+          <textarea
+            class="textarea"
+            id="story"
+            rows="6"
+            formControlName="story"
+            [attr.aria-invalid]="errors()['story'] ? 'true' : null"
+            (input)="typed()"
+          ></textarea>
+          <span class="field__counter">{{ count() }} / {{ max }}</span>
+        </bt-form-field>
+        <fieldset class="stack">
+          <legend>Public location</legend>
+          <div class="form-row">
+            <bt-form-field fieldId="city" label="City (optional)" [error]="errors()['city'] ?? null">
+              <input class="input" id="city" type="text" formControlName="city" />
+            </bt-form-field>
+            <bt-form-field fieldId="region" label="State or region (optional)" [error]="errors()['region'] ?? null">
+              <input class="input" id="region" type="text" formControlName="region" />
+            </bt-form-field>
+          </div>
+          <span class="field__help">Only city and state or region are shown. There is no street address.</span>
+        </fieldset>
+        <div class="form-actions" style="justify-content: flex-start">
+          <button btButton="primary" type="submit" [busy]="view() === 'saving'">Save story</button>
+          <a btButton="ghost" [routerLink]="publicPath()">View public page</a>
+        </div>
+      </form>
+    </div>
+  }
+}

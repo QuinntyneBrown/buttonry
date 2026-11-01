@@ -1,0 +1,81 @@
+# Production stack for one small Linux host (1 to 2 GB RAM plus the 2 GB swap file, ADR platform/0012).
+# Copied to /opt/buttonry on the server by both deploy workflows (ADR platform/0015): deploy-marketing.yml moves
+# MARKETING_TAG and restarts only `marketing`; deploy-app.yml moves APP_TAG, migrates and restarts `api`, `worker`
+# and `app`. Secrets and settings come from /opt/buttonry/.env (see .env.example).
+
+# Rotated logs so the small disk never fills.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  edge:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    mem_limit: 64m
+    logging: *logging
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS}
+    volumes:
+      - ./edge/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  marketing:
+    image: ${IMAGE_PREFIX}/buttonry-marketing:${MARKETING_TAG:-latest}
+    restart: unless-stopped
+    mem_limit: 64m
+    logging: *logging
+
+  app:
+    image: ${IMAGE_PREFIX}/buttonry-app:${APP_TAG:-latest}
+    restart: unless-stopped
+    mem_limit: 64m
+    logging: *logging
+    depends_on:
+      - api
+
+  api:
+    image: ${IMAGE_PREFIX}/buttonry-api:${APP_TAG:-latest}
+    restart: unless-stopped
+    mem_limit: 512m
+    logging: *logging
+    env_file: .env
+    environment:
+      PhotoStorage__RootPath: /data/photos
+    volumes:
+      - photos:/data/photos
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    image: ${IMAGE_PREFIX}/buttonry-worker:${APP_TAG:-latest}
+    restart: unless-stopped
+    mem_limit: 384m
+    logging: *logging
+    env_file: .env
+    environment:
+      PhotoStorage__RootPath: /data/photos
+    volumes:
+      - photos:/data/photos
+
+  migrator:
+    image: ${IMAGE_PREFIX}/buttonry-migrator:${APP_TAG:-latest}
+    mem_limit: 384m
+    logging: *logging
+    env_file: .env
+    profiles: ["migrate"]
+
+volumes:
+  photos:
+  caddy_data:
+  caddy_config:

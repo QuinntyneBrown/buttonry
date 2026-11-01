@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+title Behaviour - Process delivered order at three days
+autonumber
+actor "Job scheduler" as actor
+box "Backend - Buttonry Worker" #D1FADF
+ participant "OrderCompletionJob" as entry
+end box
+box "Backend - Buttonry Application and Domain" #ECFDF3
+ participant "CompleteDeliveredOrdersHandler" as handler
+ participant "Order" as model
+end box
+box "Backend - Buttonry Infrastructure" #FFF4E5
+ database "Feature state / unit of work" as db
+end box
+participant "Payment provider" as provider
+actor -> entry : Process delivered order at three days
+entry -> handler : Authenticate session or signed callback
+handler -> db : Load authorized current state
+db --> handler : Current state
+alt Access, validation or state check refuses the action
+ handler -> handler : Preserve state and return domain refusal
+else Authorized and valid action
+handler -> handler : Read Delivered timestamp and current open-problem state [L2-034]
+handler -> model : Apply completion once when window has elapsed
+handler -> handler : Persist event without provider payout or transfer
+handler -> db : Commit valid state and outbox atomically
+db --> handler : Result
+end
+handler --> entry : Result or domain refusal
+entry --> actor : Completed once; open problem leaves Delivered unchanged
+note over entry, handler
+Completed once; open problem leaves Delivered unchanged
+end note
+@enduml

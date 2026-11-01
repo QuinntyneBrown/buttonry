@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components - Seed founder demo inventory
+Container_Boundary(slice, "Buttonry.Cli") {
+  Component(entry, "CLI environment guard", "CLI guard", "Feature entry point")
+  Component(handler, "DemoSeeder", "Application handler", "Executes feature rules")
+  Component(entity, "DemoCatalogue", "Domain or read model", "Feature state and invariants")
+  ComponentDb(db, "Buttonry database", "SQL Server", "Persistent feature state")
+}
+Rel(entry, handler, "Dispatches validated action")
+Rel(handler, entity, "Reads or applies rules")
+Rel(handler, db, "Queries or saves atomically", "EF Core")
+@enduml

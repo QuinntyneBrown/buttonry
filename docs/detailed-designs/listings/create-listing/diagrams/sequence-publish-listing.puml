@@ -1,0 +1,46 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+title Behaviour - Publish a photographed treasure
+autonumber
+actor "Founder" as actor
+box "Frontend - Buttonry Web" #E0F2FE
+ participant "SellPage" as page
+ participant "ListingsApi" as client
+end box
+box "Backend - Buttonry API" #D1FADF
+ participant "ListingsController" as entry
+end box
+box "Backend - Buttonry Application and Domain" #ECFDF3
+ participant "ListingCommandHandlers" as handler
+ participant "Listing" as model
+end box
+box "Backend - Buttonry Infrastructure" #FFF4E5
+ database "Feature state / unit of work" as db
+end box
+actor -> page : Publish a photographed treasure
+page -> client : Existing listing publish endpoint
+client -> entry : Typed HTTPS request
+entry -> handler : Authenticate session or signed callback
+handler -> db : Load authorized current state
+db --> handler : Current state
+alt Access, validation or state check refuses the action
+ handler -> handler : Preserve state and return domain refusal
+else Authorized and valid action
+handler -> handler : Validate category, Vintage and listing fields [L2-011, L2-013, L2-015]
+handler -> model : Require 1 to 8 photos and enforce daily limit [L2-017, L2-051]
+handler -> handler : Publish Active without onboarding or fee calculation
+handler -> db : Commit valid state and outbox atomically
+db --> handler : Result
+end
+handler --> entry : Result or domain refusal
+entry --> client : Typed result or ProblemDetails
+client --> page : Update feature state
+page --> actor : Active listing visible within five seconds or 422 field errors
+note over entry, handler
+Active listing visible within five seconds or 422 field errors
+end note
+@enduml
